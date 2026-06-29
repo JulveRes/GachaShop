@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Gacha Shop</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #1e1b3a; --text: #e8e0f0; --card: #282450; --card2: #1e1a40;
+            --border: #3d3570; --btn: #52458a; --btn-hover: #6355a0;
+            --urgent: #5c4698; --urgent-hover: #6d55b0;
+            --promo-btn: #4a3d7a; --promo-hover: #5b4e90;
+            --price: #d4b8f0; --hint: #7b7098; --title: #d4c8f0;
+            --label: #a898d0; --decor: #9b8ec8; --sub: #a898d0;
+            --selected: #3d3570; --selected-border: #8b7ec8;
+            --total-bg: #282450; --total-border: #3d3570;
+            --urgent-total-bg: #2a2050; --urgent-total-border: #5c4698;
+            --deadline-bg: #1e1a40; --deadline-border: #5b4ea8;
+            --speed-bg: #2a2050; --speed-border: #5c4698;
+            --bottom-bg: #282450; --bottom-border: #3d3570;
+            --profile-bg: #282450; --profile-border: #3d3570;
+            --note: #7b7098; --note-link: #b090d8;
+            --yesno-bg: #1e1a40; --yesno-border: #3d3570;
+            --yesno-text: #e0d8f0;
+            --divider: #3d3570;
+            --shadow: rgba(90,70,150,0.2);
+            --slider-track: #3d3570;
+            --slider-thumb: #8b7ec8;
+            --error: #e48a9e;
+        }
+        body.light {
+            --bg: #F5F0E8; --text: #4A3728; --card: #EDE4D3; --card2: #F5F0E8;
+            --border: #D4C4A8; --btn: #8B7355; --btn-hover: #6B5335;
+            --urgent: #D4956B; --urgent-hover: #B8754A;
+            --promo-btn: #A08060; --promo-hover: #8B6B4A;
+            --price: #8B6914; --hint: #A09080; --title: #5C3D2E;
+            --label: #8B7355; --decor: #B8956A; --sub: #8B7355;
+            --selected: #D4C4A8; --selected-border: #B8956A;
+            --total-bg: #E8DCC8; --total-border: #D4C4A8;
+            --urgent-total-bg: #F5E6D8; --urgent-total-border: #D4A574;
+            --deadline-bg: #F5F0E8; --deadline-border: #B8956A;
+            --speed-bg: #F5E6D8; --speed-border: #D4A574;
+            --bottom-bg: #EDE4D3; --bottom-border: #D4C4A8;
+            --profile-bg: #EDE4D3; --profile-border: #D4C4A8;
+            --note: #A09080; --note-link: #8B6914;
+            --yesno-bg: #F5F0E8; --yesno-border: #D4C4A8;
+            --yesno-text: #4A3728;
+            --divider: #D4C4A8;
+            --shadow: rgba(74,55,40,0.05);
+            --slider-track: #D4C4A8;
+            --slider-thumb: #8B7355;
+            --error: #d4956b;
+        }
+        body {
+            background: var(--bg); color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh; padding: 16px; padding-bottom: 40px; transition: all 0.3s;
+            position: relative; overflow-x: hidden;
+        }
+        /* Лепестки сакуры (тёмная тема) — прозрачнее и медленнее */
+        .petal {
+            position: fixed; pointer-events: none; z-index: 0;
+            opacity: 0; animation: fall linear infinite;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg) translateX(0); opacity: 0; }
+            10% { opacity: 0.2; }
+            80% { opacity: 0.12; }
+            100% { transform: translateY(110vh) rotate(540deg) translateX(var(--drift)); opacity: 0; }
+        }
+        /* Листочки (светлая тема) */
+        .leaf {
+            position: fixed; pointer-events: none; z-index: 0;
+            opacity: 0; animation: leafFall linear infinite;
+        }
+        @keyframes leafFall {
+            0% { transform: translateY(-10vh) rotate(0deg) translateX(0); opacity: 0; }
+            10% { opacity: 0.3; }
+            80% { opacity: 0.15; }
+            100% { transform: translateY(110vh) rotate(360deg) translateX(var(--drift)); opacity: 0; }
+        }
+        .hidden { display: none !important; }
+        .screen { animation: fadeIn 0.3s ease; position: relative; z-index: 1; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .header { text-align: center; padding: 10px 0; }
+        .header .decor { font-size: 18px; color: var(--decor); letter-spacing: 8px; }
+        .header h1 { font-size: 24px; color: var(--title); margin: 6px 0; font-weight: 700; }
+        .header .sub { font-size: 13px; color: var(--sub); font-style: italic; }
+        .theme-row { display: flex; justify-content: center; margin: 6px 0; }
+        .theme-btn {
+            padding: 6px 18px; border-radius: 20px; border: 2px solid var(--border);
+            background: var(--card); color: var(--text); cursor: pointer;
+            font-size: 12px; font-weight: 600; transition: all 0.2s;
+        }
+        .back-row { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+        .back-btn { background: none; border: none; color: var(--label); font-size: 16px; cursor: pointer; padding: 8px 0; }
+        .back-btn-small { background: none; border: none; color: var(--label); font-size: 14px; cursor: pointer; padding: 4px 0; display: block; text-align: left; margin-bottom: 8px; }
+        .screen-title { font-size: 20px; font-weight: 700; color: var(--title); }
+        .section-label { font-size: 13px; color: var(--label); text-transform: uppercase; letter-spacing: 1.5px; margin: 16px 0 8px; font-weight: 600; }
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
+        .menu-btn {
+            background: var(--card); border: 2px solid transparent; border-radius: 16px;
+            padding: 22px 14px; text-align: center; cursor: pointer;
+            transition: all 0.2s; box-shadow: 0 2px 8px var(--shadow);
+        }
+        .menu-btn:active { background: var(--selected); border-color: var(--selected-border); transform: scale(0.96); }
+        .menu-btn .label { font-size: 16px; font-weight: 700; color: var(--text); }
+        .menu-btn .sub-label { font-size: 11px; color: var(--label); margin-top: 2px; }
+        .btn-full {
+            background: var(--btn); color: #fff; border: none; border-radius: 14px;
+            padding: 16px; text-align: center; cursor: pointer; font-size: 16px;
+            font-weight: 600; width: 100%; margin: 4px 0; transition: all 0.2s;
+        }
+        .btn-full:active { background: var(--btn-hover); transform: scale(0.97); }
+        .btn-urgent {
+            background: var(--urgent); color: #fff; border: none; border-radius: 14px;
+            padding: 16px; text-align: center; cursor: pointer; font-size: 16px;
+            font-weight: 600; width: 100%; margin: 4px 0; transition: all 0.2s;
+        }
+        .btn-urgent:active { background: var(--urgent-hover); transform: scale(0.97); }
+        .btn-promo {
+            background: var(--promo-btn); color: #fff; border: none; border-radius: 14px;
+            padding: 16px; text-align: center; cursor: pointer; font-size: 16px;
+            font-weight: 600; width: 100%; margin: 4px 0; transition: all 0.2s;
+        }
+        .btn-promo:active { background: var(--promo-hover); transform: scale(0.97); }
+        .choice-btn {
+            display: block; width: 100%; background: var(--card2);
+            border: 2px solid var(--border); border-radius: 12px; padding: 14px;
+            margin: 6px 0; text-align: center; font-size: 15px; font-weight: 500;
+            cursor: pointer; transition: all 0.2s; color: var(--text);
+        }
+        .choice-btn:active, .choice-btn.selected { background: var(--selected); border-color: var(--selected-border); }
+        .yesno-row { display: flex; gap: 10px; margin: 8px 0 4px; }
+        .yesno-btn {
+            flex: 1; padding: 10px; border-radius: 10px; border: 2px solid var(--yesno-border);
+            background: var(--yesno-bg); color: var(--yesno-text); cursor: pointer;
+            text-align: center; font-size: 14px; font-weight: 600; transition: all 0.2s;
+        }
+        .yesno-btn:active, .yesno-btn.selected { background: var(--selected); border-color: var(--selected-border); }
+        .quest-hint { font-size: 12px; color: var(--hint); margin: 2px 0 4px; }
+        input, textarea {
+            width: 100%; background: var(--card2); border: 2px solid var(--border);
+            border-radius: 12px; padding: 14px; font-size: 15px; color: var(--text);
+            font-family: inherit; margin: 6px 0; outline: none; transition: border 0.2s;
+        }
+        input.error, textarea.error { border-color: var(--error) !important; }
+        input::placeholder, textarea::placeholder { color: var(--hint); }
+        input:focus, textarea:focus { border-color: var(--selected-border); }
+        textarea { resize: vertical; min-height: 80px; }
+        .error-msg { color: var(--error); font-size: 11px; margin-top: -4px; margin-bottom: 4px; display: none; }
+        .error-msg.show { display: block; }
+        .region-item {
+            display: block; background: var(--card2); border-radius: 12px;
+            padding: 12px 14px; margin: 4px 0; cursor: pointer;
+            border: 2px solid transparent; transition: all 0.2s;
+        }
+        .region-item.selected { background: var(--selected); border-color: var(--selected-border); }
+        .region-row { display: flex; align-items: center; }
+        .region-item .check {
+            width: 24px; height: 24px; border: 2px solid var(--border); border-radius: 6px;
+            margin-right: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .region-item.selected .check { background: var(--selected-border); border-color: var(--selected-border); }
+        .region-item.selected .check::after { content: "✓"; color: #fff; font-weight: bold; }
+        .region-info { flex-grow: 1; display: flex; justify-content: space-between; }
+        .region-price { color: var(--price); font-weight: 600; transition: all 0.2s; }
+        .quest-box { padding: 8px 14px 4px; margin-top: 4px; display: none; }
+        .region-item.selected .quest-box { display: block; }
+        .total-bar {
+            background: var(--total-bg); border-radius: 14px; padding: 16px;
+            text-align: center; margin: 12px 0; border: 1px solid var(--total-border);
+        }
+        .total-bar .label { font-size: 12px; color: var(--label); text-transform: uppercase; letter-spacing: 2px; }
+        .total-bar .price { font-size: 28px; font-weight: 700; color: var(--price); }
+        .total-bar.urgent-bar { background: var(--urgent-total-bg); border-color: var(--urgent-total-border); }
+        .deadline-bar {
+            background: var(--deadline-bg); border: 2px solid var(--deadline-border); border-radius: 14px;
+            padding: 16px; margin: 12px 0; text-align: center;
+        }
+        .deadline-bar .dl-title { color: var(--title); font-weight: 700; font-size: 14px; margin-bottom: 8px; }
+        .deadline-bar input { text-align: center; }
+        .deadline-bar .dl-hint { font-size: 11px; color: var(--hint); margin-top: 6px; }
+        .btn-primary {
+            width: 100%; background: var(--btn); color: #fff; border: none;
+            border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 600;
+            cursor: pointer; margin: 8px 0; transition: all 0.2s;
+        }
+        .btn-primary:active { background: var(--btn-hover); transform: scale(0.97); }
+        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+        .pulls-scroll { max-height: 320px; overflow-y: auto; border-radius: 12px; }
+        .note { text-align: center; font-size: 11px; margin-top: 12px; font-style: italic; color: var(--note); }
+        .note a { color: var(--note-link); text-decoration: none; }
+        .thanks { text-align: center; font-size: 12px; margin-top: 16px; color: var(--label); }
+        .promo-hint { text-align: center; font-size: 11px; color: var(--hint); margin-top: 8px; }
+        .steps { display: flex; gap: 6px; margin-bottom: 16px; }
+        .step-dot { flex: 1; height: 4px; background: var(--border); border-radius: 2px; }
+        .step-dot.active { background: var(--selected-border); }
+        .step-dot.done { background: var(--btn); }
+        .step-dot.urgent-dot.active { background: var(--urgent); }
+        .step-dot.urgent-dot.done { background: var(--urgent-hover); }
+        .success-icon { font-size: 50px; text-align: center; margin: 20px 0; }
+        .success-title { font-size: 22px; font-weight: 700; text-align: center; color: var(--title); margin-bottom: 8px; }
+        .success-order { text-align: center; font-size: 16px; color: var(--label); margin-bottom: 20px; }
+        .speed-info {
+            background: var(--speed-bg); border: 2px solid var(--speed-border); border-radius: 12px;
+            padding: 12px; margin: 12px 0; text-align: center;
+        }
+        .speed-info .speed-title { color: var(--price); font-weight: 700; font-size: 15px; }
+        .speed-info .speed-desc { color: var(--label); font-size: 13px; margin-top: 4px; }
+        .hint-text { font-size: 11px; color: var(--hint); margin-top: 2px; margin-bottom: 4px; }
+        .info-text { font-size: 12px; color: var(--hint); margin: 8px 0; text-align: center; font-style: italic; }
+        .bottom-buttons { display: flex; gap: 10px; margin-top: 20px; }
+        .bottom-btn {
+            flex: 1; background: var(--bottom-bg); border: 2px solid var(--bottom-border); border-radius: 14px;
+            padding: 14px 10px; text-align: center; cursor: pointer;
+            transition: all 0.2s; font-size: 13px; font-weight: 600; color: var(--title);
+        }
+        .bottom-btn:active { background: var(--selected); border-color: var(--selected-border); }
+        .divider { border: none; border-top: 1px solid var(--divider); margin: 20px 0 4px; }
+        .profile-info {
+            background: var(--profile-bg); border-radius: 12px; padding: 16px; margin: 12px 0;
+            text-align: center; border: 1px solid var(--profile-border);
+        }
+        .profile-info p { color: var(--label); font-size: 13px; margin: 4px 0; }
+        .two-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .col-label { font-size: 13px; color: var(--label); margin-bottom: 4px; }
+        .range-box { background: var(--card2); border: 2px solid var(--border); border-radius: 12px; padding: 14px; margin: 8px 0; }
+        .range-box .range-title { color: var(--title); font-weight: 600; margin-bottom: 8px; }
+        .slider-row { display: flex; align-items: center; gap: 12px; }
+        input[type=range] {
+            -webkit-appearance: none; appearance: none; flex: 1; height: 8px;
+            background: var(--slider-track); border-radius: 4px; outline: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none; width: 28px; height: 28px;
+            background: var(--slider-thumb); border-radius: 50%; cursor: pointer;
+            border: 3px solid var(--bg); box-shadow: 0 0 6px var(--shadow);
+        }
+        .slider-row span { color: var(--price); font-weight: 700; min-width: 60px; text-align: center; }
+        .requisites {
+            background: var(--card); border-radius: 14px; padding: 16px; margin: 12px 0;
+            border: 2px dashed var(--selected-border); text-align: center;
+        }
+        .requisites .title { font-weight: 700; margin-bottom: 8px; color: var(--title); }
+        .requisites .info { font-size: 15px; line-height: 1.8; }
+        .instructions {
+            background: var(--card); border-radius: 14px; padding: 16px; margin: 12px 0;
+            border: 2px solid var(--border);
+        }
+        .instructions .title { font-weight: 700; margin-bottom: 10px; text-align: center; color: var(--title); }
+        .instructions ol { padding-left: 20px; line-height: 2; font-size: 14px; }
+    </style>
+</head>
+<body class="dark">
+
+<div id="petals-container"></div>
+<div id="leaves-container"></div>
+
+<div id="screen-main" class="screen">
+    <div class="header">
+        <div class="decor">✦ ✦ ✦</div>
+        <h1>Gacha Shop</h1>
+        <div class="sub">Услуги по гача-играм</div>
+    </div>
+    <div class="theme-row">
+        <button class="theme-btn" onclick="toggleTheme()">Сменить тему</button>
+    </div>
+    <div class="menu-grid">
+        <div class="menu-btn" onclick="goTo('profile')"><div class="label">Профиль</div><div class="sub-label">заказы и промокоды</div></div>
+        <div class="menu-btn" onclick="goTo('services')"><div class="label">Услуги</div><div class="sub-label">по играм</div></div>
+    </div>
+    <button class="btn-urgent" onclick="goTo('urgent-services')">⚡ СРОЧНЫЙ ЗАКАЗ</button>
+    <p style="text-align:center;color:var(--price);font-size:12px;margin-top:4px;font-weight:600;">Выполняется в 2 раза быстрее &middot; Наценка за скорость</p>
+    <button class="btn-promo" onclick="resetAndGo('promo')" style="margin-top:16px;">🎁 Промокоды</button>
+    <p class="promo-hint">Промокод на скидку 8% ждёт тебя в нашем Telegram-канале!</p>
+    <hr class="divider">
+    <div class="bottom-buttons">
+        <div class="bottom-btn" onclick="openTG('https://t.me/GachaShopYM')">📢 Наш канал</div>
+        <div class="bottom-btn" onclick="openTG('https://t.me/+sSOx_jIA7MIxNzdi')">⭐ Наша группа с отзывами</div>
+    </div>
+    <p class="note">По вопросам: <a href="https://t.me/orcxanax">@orcxanax</a></p>
+    <p class="thanks">Спасибо что выбрали нас!</p>
+</div>
+
+<div id="screen-services" class="screen hidden">
+    <div class="back-row"><button class="back-btn" onclick="goTo('main')">← Назад</button><span class="screen-title">Услуги</span></div>
+    <button class="btn-full" onclick="goTo('pulls')">🎲 Genshin Impact</button>
+    <button class="btn-full" style="opacity:0.4;">🚂 Honkai Star Rail (скоро)</button>
+    <button class="btn-full" style="opacity:0.4;">🌀 Zenless Zone Zero (скоро)</button>
+</div>
+
+<div id="screen-urgent-services" class="screen hidden">
+    <div class="back-row"><button class="back-btn" onclick="goTo('main')">← Назад</button><span class="screen-title">⚡ Срочный заказ</span></div>
+    <div class="speed-info"><div class="speed-title">⚡ СРОЧНОЕ ВЫПОЛНЕНИЕ</div><div class="speed-desc">В 2 раза быстрее. Наценка включена в цены.</div></div>
+    <button class="btn-full" onclick="goTo('urgent-pulls')" style="background:var(--urgent);">🎲 Genshin Impact (СРОЧНО)</button>
+</div>
+
+<div id="screen-pulls" class="screen hidden">
+    <div class="back-row"><button class="back-btn" onclick="goTo('services')">← Назад</button><span class="screen-title">Genshin Impact</span></div>
+    <button class="btn-full" onclick="resetAndGo('pulls-order')">🎲 Заказ круток</button>
+    <button class="btn-full" onclick="resetAndGo('map')">🗺️ Зачистка карты</button>
+    <button class="btn-full" onclick="resetAndGo('story')">📖 Прохождение квестов</button>
+    <button class="btn-full" onclick="resetAndGo('oculus')">💎 Сбор окулов</button>
+    <button class="btn-full" onclick="resetAndGo('reputation')">🏅 Репутация</button>
+    <button class="btn-full" onclick="resetAndGo('abyss')">⚔️ Театр / Бездна / Эхо</button>
+    <button class="btn-full" onclick="resetAndGo('char-up')">📈 Прокачка персонажей</button>
+    <button class="btn-full" onclick="resetAndGo('care')">💎 Уход за аккаунтом</button>
+    <button class="btn-full" onclick="resetAndGo('farm')">🌿 Сбор ресурсов</button>
+</div>
+
+<div id="screen-urgent-pulls" class="screen hidden">
+    <div class="back-row"><button class="back-btn" onclick="goTo('urgent-services')">← Назад</button><span class="screen-title">⚡ Genshin (СРОЧНО)</span></div>
+    <button class="btn-full" onclick="resetAndGo('urgent-pulls-order')" style="background:var(--urgent);">🎲 Заказ круток (СРОЧНО)</button>
+    <button class="btn-full" onclick="resetAndGo('urgent-map')" style="background:var(--urgent);">🗺️ Зачистка карты (СРОЧНО)</button>
+    <button class="btn-full" onclick="resetAndGo('urgent-story')" style="background:var(--urgent);">📖 Прохождение квестов (СРОЧНО)</button>
+    <button class="btn-full" onclick="resetAndGo('urgent-oculus')" style="background:var(--urgent);">💎 Сбор окулов (СРОЧНО)</button>
+</div>
+
+<div id="screen-pulls-order" class="screen hidden">
+    <div class="back-row"><button class="back-btn" onclick="resetAndGo('pulls')">← Назад</button><span class="screen-title">Заказ круток</span></div>
+    <div class="steps"><div class="step-dot active" id="pstep1"></div><div class="step-dot" id="pstep2"></div><div class="step-dot" id="pstep3"></div></div>
+    <div id="pulls-step1">
+        <div class="section-label">Шаг 1: Ранг приключений</div>
+        <button class="choice-btn" id="rank-1" onclick="selectRank('1', false)">Ранг 1-25 (10 руб/крутка)</button>
+        <button class="choice-btn" id="rank-2" onclick="selectRank('2', false)">Ранг 26-44 (15 руб/крутка)</button>
+        <button class="choice-btn" id="rank-3" onclick="selectRank('3', false)">Ранг 45-54 (20 руб/крутка)</button>
+        <button class="choice-btn" id="rank-4" onclick="selectRank('4', false)">Ранг 55-60 (25 руб/крутка)</button>
+        <div class="section-label">Проценты зачистки локаций</div>
+        <textarea id="percents" placeholder="Мондштадт — 80%&#10;Ли Юэ — 45%&#10;..."></textarea>
+        <p class="error-msg" id="percents-error">Вы не заполнили данное поле!</p>
+        <button class="btn-primary" id="to-step2" disabled onclick="if(validateField('percents'))pullsStep2(false)">Далее</button>
+    </div>
+    <div id="pulls-step2" class="hidden">
+        <button class="back-btn-small" onclick="pullsBackToStep1(false)">← Предыдущий шаг</button>
+        <div class="section-label">Шаг 2: Количество круток</div>
+        <div class="pulls-scroll" id="qty-list"></div>
+        <button class="btn-primary hidden" id="to-step3" onclick="pullsStep3(false)">Далее</button>
+    </div>
+    <div id="pulls-step3" class="hidden">
+        <button class="back-btn-small" onclick="pullsBackToStep2(false)">← Предыдущий шаг</button>
+        <div class="section-label">Шаг 3: Данные для связи</div>
+        <input type="text" id="p-username" placeholder="TG username">
+        <p class="error-msg" id="p-username-error">Укажите Telegram username!</p>
+        <div class="section-label">Ограничения по заказу</div>
+        <textarea id="p-restrictions" placeholder="Что нельзя делать..."></textarea>
+        <p class="hint-text">Укажите, что нельзя трогать, тратить или менять</p>
+        <input type="text" id="p-promo" placeholder="Промокод (если есть)">
+        <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="p-deadline" placeholder="Дедлайн"><p class="error-msg" id="p-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
+        <p style="text-align:center;font-weight:700;margin:12px 0;" id="p-total"></p>
+        <button class="btn-primary" id="p-submit" disabled onclick="if(validateAll(['p-username','p-deadline'])){setPayment(state.price);goTo('payment');}">Оформить заказ</button>
+        <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
+    </div>
+</div>
+
+<div id="screen-urgent-pulls-order" class="screen hidden">
+    <div class="back-row"><button class="back-btn" onclick="resetAndGo('urgent-pulls')">← Назад</button><span class="screen-title">⚡ Крутки (СРОЧНО)</span></div>
+    <div class="steps"><div class="step-dot urgent-dot active" id="upstep1"></div><div class="step-dot urgent-dot" id="upstep2"></div><div class="step-dot urgent-dot" id="upstep3"></div></div>
+    <div id="urgent-pulls-step1">
+        <div class="section-label">Шаг 1: Ранг приключений</div>
+        <button class="choice-btn" id="urank-1" onclick="selectRank('1', true)">Ранг 1-25 (20 руб/крутка)</button>
+        <button class="choice-btn" id="urank-2" onclick="selectRank('2', true)">Ранг 26-44 (25 руб/крутка)</button>
+        <button class="choice-btn" id="urank-3" onclick="selectRank('3', true)">Ранг 45-54 (30 руб/крутка)</button>
+        <button class="choice-btn" id="urank-4" onclick="selectRank('4', true)">Ранг 55-60 (35 руб/крутка)</button>
+        <div class="section-label">Проценты зачистки локаций</div>
+        <textarea id="upercents" placeholder="Мондштадт — 80%&#10;Ли Юэ — 45%&#10;..."></textarea>
+        <p class="error-msg" id="upercents-error">Вы не заполнили данное поле!</p>
+        <button class="btn-primary" id="uto-step2" disabled onclick="if(validateField('upercents'))pullsStep2(true)">Далее</button>
+    </div>
+    <div id="urgent-pulls-step2" class="hidden">
+        <button class="back-btn-small" onclick="pullsBackToStep1(true)">← Предыдущий шаг</button>
+        <div class="section-label">Шаг 2: Количество круток</div>
+        <div class="pulls-scroll" id="uqty-list"></div>
+        <button class="btn-primary hidden" id="uto-step3" onclick="pullsStep3(true)">Далее</button>
+    </div>
+    <div id="urgent-pulls-step3" class="hidden">
+        <button class="back-btn-small" onclick="pullsBackToStep2(true)">← Предыдущий шаг</button>
+        <div class="section-label">Шаг 3: Данные для связи</div>
+        <input type="text" id="up-username" placeholder="TG username">
+        <p class="error-msg" id="up-username-error">Укажите Telegram username!</p>
+        <div class="section-label">Ограничения по заказу</div>
+        <textarea id="up-restrictions" placeholder="Что нельзя делать..."></textarea>
+        <p class="hint-text">Укажите, что нельзя трогать, тратить или менять</p>
+        <input type="text" id="up-promo" placeholder="Промокод (если есть)">
+        <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="up-deadline" placeholder="Дедлайн"><p class="error-msg" id="up-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
+        <p style="text-align:center;font-weight:700;margin:12px 0;" id="up-total"></p>
+        <button class="btn-primary" id="up-submit" disabled onclick="if(validateAll(['up-username','up-deadline'])){setPayment(state.urgentPrice);goTo('payment');}">Оформить срочный заказ</button>
+        <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
+    </div>
+</div>
+
+<div id="screen-map" class="screen hidden">
+    <div class="back-row"><button class="back-btn" onclick="resetAndGo('pulls')">← Назад</button><span class="screen-title">Зачистка карты</span></div>
+    <div class="section-label">Отметьте регионы</div>
+    <div id="regions-list"></div>
+    <div class="total-bar"><div class="label">Итого к оплате</div><div class="price" id="map-total">0 руб.</div></div>
+    <div class="section-label">Ограничения по заказу</div>
+    <textarea id="m-restrictions" placeholder="Что нельзя делать..."></textarea>
+    <p class="hint-text">Укажите, что нельзя трогать, тратить или менять</p>
+    <input type="text" id="m-username" placeholder="TG username">
+    <p class="error-msg" id="m-username-error">Укажите Telegram username!</p>
+    <input type="text" id="m-promo" placeholder="Промокод (если есть)">
+    <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="m-deadline" placeholder="Дедлайн"><p class="error-msg" id="m-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
+    <button class="btn-primary" id="m-submit" disabled onclick="if(validateAll(['m-username','m-deadline']))goToPayment('map-total')">Оформить заказ</button>
+    <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
+</div>
+
+<div id="screen-urgent-map" class="screen hidden">
+    <div class="back-row"><button class="back-btn" onclick="resetAndGo('urgent-pulls')">← Назад</button><span class="screen-title">⚡ Зачистка (СРОЧНО)</span></div>
+    <div class="speed-info"><div class="speed-title">⚡ СРОЧНОЕ ВЫПОЛНЕНИЕ</div><div class="speed-desc">В 2 раза быстрее. Наценка +300 руб к локации.</div></div>
+    <div class="section-label">Отметьте регионы</div>
+    <div id="urgent-regions-list"></div>
+    <div class="total-bar urgent-bar"><div class="label">Итого к оплате (срочно)</div><div class="price" id="umap-total">0 руб.</div></div>
+    <div class="section-label">Ограничения по заказу</div>
+    <textarea id="um-restrictions" placeholder="Что нельзя делать..."></textarea>
+    <p class="hint-text">Укажите, что нельзя трогать, тратить или менять</p>
+    <input type="text" id="um-username" placeholder="TG username">
+    <p class="error-msg" id="um-username-error">Укажите Telegram username!</p>
+    <input type="text" id="um-promo" placeholder="Промокод (если есть)">
+    <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="um-deadline" placeholder="Дедлайн"><p class="error-msg" id="um-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
+    <button class="btn-primary" id="um-submit" disabled onclick="if(validateAll(['um-username','um-deadline']))goToPayment('umap-total')" style="background:var(--urgent);">Оформить срочный заказ</button>
+    <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
+</div>
+
+<div id="screen-story" class="screen hidden">
+    <div class="back-row"><button class="back-btn" onclick="resetAndGo('pulls')">← Назад</button><span class="screen-title">Прохождение квестов</span></div>
+    <div class="section-label">Выберите квесты</div>
+    <div id="story-list"></div>
+    <div class="total-bar"><div class="label">Итого к оплате</div><div class="price" id="story-total">0 руб.</div></div>
+    <div id="story-form" class="hidden">
+        <div class="section-label">Ограничения по заказу</div>
+        <textarea id="s-restrictions" placeholder="Что нельзя делать..."></textarea>
+        <p class="hint-text">Укажите, что нельзя трогать, тратить или менять</p>
+        <input type="text" id="s-username" placeholder="TG username">
+        <p class="error-msg" id="s-username-error">Укажите Telegram username!</p>
+        <input type="text" id="s-promo" placeholder="Промокод (если есть)">
+        <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="s-deadline" placeholder="Дедлайн"><p class="error-msg" id="s-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
+        <button class="btn-primary" onclick="if(validateAll(['s-username','s-deadline']))goToPayment('story-total')">Оформить заказ</button>
+    </div>
+</div>
+
+<div id="screen-urgent-story" class="screen hidden">
+    <div class="back-row"><button class="back-btn" onclick="resetAndGo('urgent-pulls')">← Назад</button><span class="screen-title">⚡ Квесты (СРОЧНО)</span></div>
+    <div class="speed-info"><div class="speed-title">⚡ СРОЧНОЕ ВЫПОЛНЕНИЕ</div><div class="speed-desc">В 2 раза быстрее. +100 руб к квесту.</div></div>
+    <div class="section-label">Выберите квесты</div>
+    <div id="urgent-story-list"></div>
+    <div class="total-bar urgent-bar"><div class="label">Итого к оплате (срочно)</div><div class="price" id="ustory-total">0 руб.</div></div>
+    <div id="urgent-story-form" class="hidden">
+        <div class="section-label">Ограничения по заказу</div>
+        <textarea id="us-restrictions" placeholder="Что нельзя делать..."></textarea>
+        <p class="hint-text">Укажите, что нельзя трогать, тратить или менять</p>
+        <input type="text" id="us-username" placeholder="TG username">
+        <p class="error-msg" id="us-username-error">Укажите Telegram username!</p>
+        <input type="text" id="us-promo" placeholder="Промокод (если есть)">
+        <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="us-deadline" placeholder="Дедлайн"><p class="error-msg" id="us-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
+        <button class="btn-primary" onclick="if(validateAll(['us-username','us-deadline']))goToPayment('ustory-total')" style="background:var(--urgent);">Оформить срочный заказ</button>
+    </div>
+</div>
+
+<div id="screen-oculus" class="screen hidden">
+    <div class="back-row"><button class="back-btn" onclick="resetAndGo('pulls')">← Назад</button><span class="screen-title">Сбор окулов</span></div>
+    <div class="section-label">Выберите окулы</div>
+    <div id="oculus-list"></div>
+    <div class="total-bar"><div class="label">Итого к оплате</div><div class="price" id="oculus-total">0 руб.</div></div>
+    <div class="section-label">Ограничения по заказу</div>
+    <textarea id="oc-restrictions" placeholder="Что нельзя делать..."></textarea>
+    <p class="hint-text">Укажите, что нельзя трогать, тратить или менять</p>
+    <input type="text" id="oc-username" placeholder="TG username">
+    <p class="error-msg" id="oc-username-error">Укажите Telegram username!</p>
+    <input type="text" id="oc-promo" placeholder="Промокод (если есть)">
+    <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="oc-deadline" placeholder="Дедлайн"><p class="error-msg" id="oc-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
+    <button class="btn-primary" id="oc-submit" disabled onclick="if(validateAll(['oc-username','oc-deadline']))goToPayment('oculus-total')">Оформить заказ</button>
+    <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
+</div>
+
+<div id="screen-urgent-oculus" class="screen hidden">
+    <div class="back-row"><button class="back-btn" onclick="resetAndGo('urgent-pulls')">← Назад</button><span class="screen-title">⚡ Сбор окулов (СРОЧНО)</span></div>
+    <div class="speed-info"><div class="speed-title">⚡ СРОЧНОЕ ВЫПОЛНЕНИЕ</div><div class="speed-desc">В 2 раза быстрее. Наценка +300 руб к позиции.</div></div>
+    <div class="section-label">Выберите окулы</div>
+    <div id="urgent-oculus-list"></div>
+    <div class="total-bar urgent-bar"><div class="label">Итого к оплате (срочно)</div><div class="price" id="uoculus-total">0 руб.</div></div>
+    <div class="section-label">Ограничения по заказу</div>
+    <textarea id="uoc-restrictions" placeholder="Что нельзя делать..."></textarea>
+    <p class="hint-text">Укажите, что нельзя трогать, тратить или менять</p>
+    <input type="text" id="uoc-username" placeholder="TG username">
+    <p class="error-msg" id="uoc-username-error">Укажите Telegram username!</p>
+    <input type="text" id="uoc-promo" placeholder="Промокод (если есть)">
+    <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="uoc-deadline" placeholder="Дедлайн"><p class="error-msg" id="uoc-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
+    <button class="btn-primary" id="uoc-submit" disabled onclick="if(validateAll(['uoc-username','uoc-deadline']))goToPayment('uoculus-total')" style="background:var(--urgent);">Оформить срочный заказ</button>
+    <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
+</div>
+
+<div id="screen-reputation" class="screen hidden">
+    <div class="back-row"><button class="back-btn" onclick="resetAndGo('pulls')">← Назад</button><span class="screen-title">Репутация</span></div>
+    <div class="section-label">Выберите регионы</div>
+    <div id="rep-list"></div>
+    <div class="total-bar"><div class="label">Итого к оплате</div><div class="price" id="rep-total">0 руб.</div></div>
+    <div class="section-label">Ограничения по заказу</div>
+    <textarea id="rep-restrictions" placeholder="Что нельзя делать..."></textarea>
+    <p class="hint-text">Укажите, что нельзя трогать, тратить или менять</p>
+    <input type="text" id="rep-username" placeholder="TG username">
+    <p class="error-msg" id="rep-username-error">Укажите Telegram username!</p>
+    <input type="text" id="rep-promo" placeholder="Промокод (если есть)">
+    <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="rep-deadline" placeholder="Дедлайн"><p class="error-msg" id="rep-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
+    <button class="btn-primary" id="rep-submit" disabled onclick="if(validateAll(['rep-username','rep-deadline']))goToPayment('rep-total')">Оформить заказ</button>
+    <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
+</div>
+
+<div id="screen-abyss" class="screen hidden">
+    <div class="back-row"><button class="back-btn" onclick="resetAndGo('pulls')">← Назад</button><span class="screen-title">Театр / Бездна / Эхо</span></div>
+    <p class="info-text">Если вы хотите приобрести только одну из услуг, пропускайте заполнение остальных. TG username и дедлайн обязательны.</p>
+    <div class="range-box"><div class="range-title">Театр</div>
+        <button class="choice-btn" id="th-1" onclick="toggleAbyss('th','1',100)">1-3 акт — 100 руб</button>
+        <button class="choice-btn" id="th-2" onclick="toggleAbyss('th','2',200)">4-6 акт — 200 руб</button>
+        <button class="choice-btn" id="th-3" onclick="toggleAbyss('th','3',300)">7-8 акт — 300 руб</button>
+        <button class="choice-btn" id="th-4" onclick="toggleAbyss('th','4',400)">9-10 акт — 400 руб</button>
+    </div>
+    <div class="range-box"><div class="range-title">Бездна</div>
+        <button class="choice-btn" id="ab-1" onclick="toggleAbyss('ab','1',150)">9-10 этаж — 150 руб</button>
+        <button class="choice-btn" id="ab-2" onclick="toggleAbyss('ab','2',250)">11-12 этаж — 250 руб</button>
+    </div>
+    <div class="range-box"><div class="range-title">Эхо</div>
+        <p class="hint-text">Сколько эхо хотите? Одно эхо — 500 руб</p>
+        <div class="slider-row"><span id="echo-val">1</span><input type="range" id="echo-slider" min="1" max="21" value="1" oninput="updateEcho()"><span id="echo-price">500 руб.</span></div>
+        <div class="section-label">Персонажи для эхо</div><textarea id="echo-chars" placeholder="Список персонажей..."></textarea>
+    </div>
+    <div class="total-bar"><div class="label">Итого к оплате</div><div class="price" id="abyss-total">0 руб.</div></div>
+    <div class="section-label">Ограничения по заказу</div><textarea id="ab-restrictions" placeholder="Что нельзя делать..."></textarea>
+    <p class="hint-text">Укажите, что нельзя трогать, тратить или менять</p>
+    <input type="text" id="ab-username" placeholder="TG username">
+    <p class="error-msg" id="ab-username-error">Укажите Telegram username!</p>
+    <input type="text" id="ab-promo" placeholder="Промокод (если есть)">
+    <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="ab-deadline" placeholder="Дедлайн"><p class="error-msg" id="ab-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
+    <button class="btn-primary" id="ab-submit" disabled onclick="if(validateAll(['ab-username','ab-deadline']))goToPayment('abyss-total')">Оформить заказ</button>
+    <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
+</div>
+
+<div id="screen-char-up" class="screen hidden">
+    <div class="back-row"><button class="back-btn" onclick="resetAndGo('pulls')">← Назад</button><span class="screen-title">Прокачка персонажей</span></div>
+    <p class="info-text">Если вы хотите приобрести только одну из услуг, пропускайте заполнение остальных. TG username и дедлайн обязательны.</p>
+    <div class="range-box"><div class="range-title">Таланты</div>
+        <button class="choice-btn" id="tal-1" onclick="selectTalent('1-6',300)">Талант 1→6 — 300 руб</button>
+        <button class="choice-btn" id="tal-2" onclick="selectTalent('7-10',500)">Талант 7→10 — 500 руб</button>
+        <button class="choice-btn" id="tal-3" onclick="selectTalent('1-10',800)">Талант 1→10 — 800 руб</button>
+    </div>
+    <div class="range-box"><div class="range-title">Уровень персонажа</div>
+        <div class="section-label">Текущий уровень</div><input type="number" id="char-lvl-from" placeholder="20" min="1" max="89" onchange="updateCharLevel()">
+        <div class="section-label">Желаемый уровень (макс. 90)</div><input type="number" id="char-lvl-to" placeholder="80" min="2" max="90" onchange="updateCharLevel()">
+        <p class="hint-text">1-60: 50 руб / 10 ур. | 60-90: 80 руб / 10 ур.</p>
+        <p style="text-align:center;color:var(--price);font-weight:600;" id="char-lvl-price">0 руб.</p>
+        <p class="hint-text">Сколько персонажей?</p>
+        <div class="slider-row"><span id="char-count-val">1</span><input type="range" id="char-count-slider" min="1" max="100" value="1" oninput="updateCharCount()"><span id="char-count-total">×1 = 0 руб.</span></div>
+    </div>
+    <div class="range-box"><div class="range-title">Уровень оружия</div>
+        <div class="section-label">Текущий уровень</div><input type="number" id="wpn-lvl-from" placeholder="20" min="1" max="89" onchange="updateWpnLevel()">
+        <div class="section-label">Желаемый уровень (макс. 90)</div><input type="number" id="wpn-lvl-to" placeholder="80" min="2" max="90" onchange="updateWpnLevel()">
+        <p class="hint-text">1-60: 50 руб / 10 ур. | 60-90: 80 руб / 10 ур.</p>
+        <p style="text-align:center;color:var(--price);font-weight:600;" id="wpn-lvl-price">0 руб.</p>
+        <p class="hint-text">Сколько оружий?</p>
+        <div class="slider-row"><span id="wpn-count-val">1</span><input type="range" id="wpn-count-slider" min="1" max="100" value="1" oninput="updateWpnCount()"><span id="wpn-count-total">×1 = 0 руб.</span></div>
+    </div>
+    <div class="total-bar"><div class="label">Итого к оплате</div><div class="price" id="char-total">0 руб.</div></div>
+    <div class="section-label">Ограничения по заказу</div><textarea id="char-restrictions" placeholder="Что нельзя делать..."></textarea>
+    <p class="hint-text">Укажите, что нельзя трогать, тратить или менять</p>
+    <input type="text" id="char-username" placeholder="TG username">
+    <p class="error-msg" id="char-username-error">Укажите Telegram username!</p>
+    <input type="text" id="char-promo" placeholder="Промокод (если есть)">
+    <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="char-deadline" placeholder="Дедлайн"><p class="error-msg" id="char-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
+    <button class="btn-primary" id="char-submit" disabled onclick="if(validateAll(['char-username','char-deadline']))goToPayment('char-total')">Оформить заказ</button>
+    <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
+</div>
+
+<div id="screen-care" class="screen hidden">
+    <div class="back-row"><button class="back-btn" onclick="resetAndGo('pulls')">← Назад</button><span class="screen-title">Уход за аккаунтом</span></div>
+    <div class="section-label">Выберите срок</div>
+    <button class="choice-btn" id="care-1" onclick="selectCare('1')">Неделя — 50 руб</button>
+    <button class="choice-btn" id="care-2" onclick="selectCare('2')">Две недели — 100 руб</button>
+    <button class="choice-btn" id="care-3" onclick="selectCare('3')">Месяц — 200 руб</button>
+    <p class="note">Другой срок — <a href="https://t.me/orcxanax">@orcxanax</a></p>
+    <div class="total-bar"><div class="label">Итого к оплате</div><div class="price" id="care-total">0 руб.</div></div>
+    <div class="section-label">Предпочтения по заказу</div><textarea id="care-restrictions" placeholder="Что нужно сделать..."></textarea>
+    <p class="hint-text">Укажите, что нужно сделать с аккаунтом</p>
+    <input type="text" id="care-username" placeholder="TG username">
+    <p class="error-msg" id="care-username-error">Укажите Telegram username!</p>
+    <input type="text" id="care-promo" placeholder="Промокод (если есть)">
+    <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="care-deadline" placeholder="Дедлайн"><p class="error-msg" id="care-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
+    <button class="btn-primary" id="care-submit" disabled onclick="if(validateAll(['care-username','care-deadline']))goToPayment('care-total')">Оформить заказ</button>
+</div>
+
+<div id="screen-farm" class="screen hidden">
+    <div class="back-row"><button class="back-btn" onclick="resetAndGo('pulls')">← Назад</button><span class="screen-title">Сбор ресурсов</span></div>
+    <p class="info-text">Если вы хотите только диковины или только руду — оставьте 0 в ненужном поле. TG username и дедлайн обязательны.</p>
+    <div class="two-cols">
+        <div><div class="col-label">Диковины</div><input type="number" id="farm-dikovina" value="0" min="0" onchange="updateFarmTotal()"></div>
+        <div><div class="col-label">Руда</div><input type="number" id="farm-ruda" value="0" min="0" onchange="updateFarmTotal()"></div>
+    </div>
+    <p class="hint-text">Диковина — 1 руб/шт, Руда — 2 руб/шт</p>
+    <div class="section-label">Предпочтения по заказу</div>
+    <textarea id="farm-restrictions" placeholder="Какие именно ресурсы нужны..."></textarea>
+    <p class="hint-text">Укажите какие именно ресурсы вам нужны</p>
+    <div class="total-bar"><div class="label">Итого к оплате</div><div class="price" id="farm-total">0 руб.</div></div>
+    <input type="text" id="farm-username" placeholder="TG username">
+    <p class="error-msg" id="farm-username-error">Укажите Telegram username!</p>
+    <input type="text" id="farm-promo" placeholder="Промокод (если есть)">
+    <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="farm-deadline" placeholder="Дедлайн"><p class="error-msg" id="farm-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
+    <button class="btn-primary" id="farm-submit" disabled onclick="if(validateAll(['farm-username','farm-deadline']))goToPayment('farm-total')">Оформить заказ</button>
+</div>
+
+<div id="screen-payment" class="screen hidden">
+    <div class="back-row"><button class="back-btn" onclick="goBackFromPayment()">← Назад</button><span class="screen-title">Способ оплаты</span></div>
+    <div class="total-bar"><div class="label">Итого к оплате</div><div class="price" id="pay-total">0 руб.</div></div>
+    <div class="section-label">Выберите способ оплаты</div>
+    <button class="choice-btn" onclick="selectPayment('full')" style="font-size:16px;padding:18px;">
+        💰 Оплатить полностью<br><span style="font-size:13px;color:var(--hint);">Вся сумма сразу на карту</span>
+    </button>
+    <button class="choice-btn" onclick="selectPayment('half')" style="font-size:16px;padding:18px;">
+        💳 Внести предоплату 50%<br><span style="font-size:13px;color:var(--hint);">Половина сейчас, остальное — напрямую качеру после выполнения половины заказа</span>
+    </button>
+    <div id="payment-full-box" class="hidden">
+        <div class="requisites">
+            <div class="title">РЕКВИЗИТЫ ДЛЯ ОПЛАТЫ</div>
+            <div class="info">
+                Карта: 2200 7013 9958 3951 (Т-Банк)<br>
+                Получатель: Юлия Р.<br>
+                Сумма: <span id="pay-full-amount">0 руб.</span>
+            </div>
+        </div>
+        <div class="instructions">
+            <div class="title">ЧТО ДЕЛАТЬ ДАЛЬШЕ</div>
+            <ol>
+                <li>Оплатите полную сумму по реквизитам выше</li>
+                <li>Нажмите кнопку ниже</li>
+                <li>Отправьте скриншот оплаты в чат с ботом</li>
+            </ol>
+        </div>
+        <button class="btn-primary" onclick="goTo('success');resetAll();">Оформить заказ</button>
+    </div>
+    <div id="payment-half-box" class="hidden">
+        <div class="requisites">
+            <div class="title">РЕКВИЗИТЫ ДЛЯ ПРЕДОПЛАТЫ 50%</div>
+            <div class="info">
+                Карта: 2200 7013 9958 3951 (Т-Банк)<br>
+                Получатель: Юлия Р.<br>
+                Сумма к оплате сейчас: <span id="pay-half-amount">0 руб.</span><br>
+                <span style="font-size:12px;color:var(--hint);">Оставшиеся 50% оплачиваются напрямую качеру<br>после выполнения половины заказа</span>
+            </div>
+        </div>
+        <div class="instructions">
+            <div class="title">ЧТО ДЕЛАТЬ ДАЛЬШЕ</div>
+            <ol>
+                <li>Оплатите 50% по реквизитам выше</li>
+                <li>Нажмите кнопку ниже</li>
+                <li>Отправьте скриншот оплаты в чат с ботом</li>
+                <li>Оставшиеся 50% оплатите напрямую качеру после выполнения половины заказа</li>
+            </ol>
+        </div>
+        <button class="btn-primary" onclick="goTo('success');resetAll();">Оформить заказ</button>
+    </div>
+</div>
+
+<div id="screen-promo" class="screen hidden">
+    <div class="back-row"><button class="back-btn" onclick="resetAndGo('main')">← Назад</button><span class="screen-title">Промокоды</span></div>
+    <input type="text" id="promo-input" placeholder="Введите промокод...">
+    <button class="btn-primary" onclick="activatePromo()">Активировать</button>
+    <p style="text-align:center;margin-top:12px;font-weight:600;" id="promo-result"></p>
+</div>
+
+<div id="screen-profile" class="screen hidden">
+    <div class="back-row"><button class="back-btn" onclick="goTo('main')">← Назад</button><span class="screen-title">Профиль</span></div>
+    <div class="profile-info"><p>Нажмите для загрузки профиля Telegram</p><p style="font-size:11px;opacity:0.7;">(без авторизации, Telegram передаст данные автоматически)</p></div>
+    <button class="btn-full" onclick="alert('Загрузка...')">Загрузить профиль</button>
+</div>
+
+<div id="screen-success" class="screen hidden">
+    <div class="success-icon">✅</div>
+    <div class="success-title">Заказ оформлен!</div>
+    <div class="success-order">Приложение закроется.<br>Бот пришлёт реквизиты для оплаты.</div>
+    <p class="thanks">Спасибо что выбрали нас!</p>
+    <button class="btn-primary" onclick="resetAndGo('main')">На главную</button>
+</div>
+
+<script>
+    const REGIONS = [
+        {name:"Мондштадт (без хребта)",price:1100},{name:"Хребет",price:818},
+        {name:"Ли Юэ",price:1400},{name:"Инадзума",price:1800},
+        {name:"Энканомия",price:800},{name:"Разлом",price:800},
+        {name:"Фонтейн",price:1650},{name:"Натлан",price:2000},
+        {name:"Нод Край",price:1280},{name:"Сумеру (пустыня)",price:2100},
+        {name:"Сумеру (лес)",price:2000},{name:"Море древности",price:800},
+        {name:"Долина Чэньюй",price:818}
+    ];
+    const STORY = [
+        {name:"Прохождение сюжета Натлана",price:300},{name:"Прохождение сюжета Нод-Края",price:250},
+        {name:"Прохождение полностью ивента",price:70},{name:"Задание с аранарами",price:300},
+        {name:"Встречи все концовки",price:40},{name:"Прохождение сюжета Мондштата",price:110},
+        {name:"Прохождение сюжета Инадзумы",price:230},{name:"Прохождение сюжета Ли Юэ",price:180},
+        {name:"Любое задание мира",price:50},{name:"Задание легенд",price:65}
+    ];
+    const OCULUS = [
+        {name:"Анемокулы",price:250},{name:"Багровые агаты",price:218},
+        {name:"Геокулы",price:500},{name:"Духовные карпы",price:450},
+        {name:"Светоносные кристаллы",price:358},{name:"Электрокулы",price:618},
+        {name:"Дендрокулы",price:981},{name:"Оперение очищающего света",price:500},
+        {name:"Гидрокулы",price:881},{name:"Пирокулы",price:1000},
+        {name:"Лунокулы",price:900}
+    ];
+    const REPUTATION = [
+        {name:"Мондштадт",price:400},{name:"Ли Юэ",price:400},
+        {name:"Инадзума",price:500},{name:"Сумеру",price:600},
+        {name:"Фонтейн",price:750},{name:"Натлан",price:1000}
+    ];
+    const RANK_PRICES = {'1':{n:10,u:20},'2':{n:15,u:25},'3':{n:20,u:30},'4':{n:25,u:35}};
+    const CARE_PRICES = {'1':{p:50},'2':{p:100},'3':{p:200}};
+    const EXCLUDE_QUEST = ["Море древности","Долина Чэньюй"];
+
+    let state = {
+        rank:null,qty:null,price:0,urgentRank:null,urgentQty:null,urgentPrice:0,
+        mapSelected:new Set(),urgentMapSelected:new Set(),
+        mapQuest:new Set(),urgentMapQuest:new Set(),
+        storySelected:new Set(),urgentStorySelected:new Set(),
+        oculusSelected:new Set(),urgentOculusSelected:new Set(),
+        repSelected:new Set(),
+        abThSelected:new Set(),abAbSelected:new Set(),abEchoCount:1,abEchoPrice:500,
+        careSelected:null,carePrice:0,farmD:0,farmR:0,farmPrice:0,
+        talentPrice:0,charLvlPrice:0,charCount:1,wpnLvlPrice:0,wpnCount:1,
+        paymentTotal:0,lastScreen:null
+    };
+
+    function createPetals(){
+        const container=document.getElementById('petals-container');
+        container.innerHTML='';
+        for(let i=0;i<20;i++){
+            const petal=document.createElement('div');
+            petal.className='petal';
+            petal.textContent='🌸';
+            petal.style.left=Math.random()*100+'%';
+            petal.style.fontSize=(10+Math.random()*12)+'px';
+            petal.style.animationDuration=(10+Math.random()*12)+'s';
+            petal.style.animationDelay=(Math.random()*10)+'s';
+            petal.style.setProperty('--drift',(Math.random()*60-30)+'px');
+            container.appendChild(petal);
+        }
+    }
+    function createLeaves(){
+        const container=document.getElementById('leaves-container');
+        container.innerHTML='';
+        const leaves=['🍁'];
+        for(let i=0;i<18;i++){
+            const leaf=document.createElement('div');
+            leaf.className='leaf';
+            leaf.textContent=leaves[Math.floor(Math.random()*leaves.length)];
+            leaf.style.left=Math.random()*100+'%';
+            leaf.style.fontSize=(10+Math.random()*14)+'px';
+            leaf.style.animationDuration=(10+Math.random()*12)+'s';
+            leaf.style.animationDelay=(Math.random()*10)+'s';
+            leaf.style.setProperty('--drift',(Math.random()*60-30)+'px');
+            container.appendChild(leaf);
+        }
+    }
+    function updateDecor(){
+        if(document.body.classList.contains('light')){
+            document.getElementById('petals-container').innerHTML='';
+            createLeaves();
+        } else {
+            document.getElementById('leaves-container').innerHTML='';
+            createPetals();
+        }
+    }
+    createPetals();
+
+    function validateField(id){
+        let el=document.getElementById(id);
+        let errEl=document.getElementById(id+'-error');
+        if(!el)return true;
+        if(!el.value.trim()){
+            el.classList.add('error');
+            if(errEl)errEl.classList.add('show');
+            return false;
+        } else {
+            el.classList.remove('error');
+            if(errEl)errEl.classList.remove('show');
+            return true;
+        }
+    }
+    function validateAll(ids){
+        let ok=true;
+        ids.forEach(id=>{if(!validateField(id))ok=false;});
+        return ok;
+    }
+
+    function toggleTheme(){
+        document.body.classList.toggle('dark');
+        document.body.classList.toggle('light');
+        updateDecor();
+    }
+    function openTG(u){window.open(u,'_blank');}
+
+    function setPayment(total){state.paymentTotal=total;}
+    function goToPayment(totalId){
+        let total=parseInt(document.getElementById(totalId).textContent)||0;
+        state.paymentTotal=total;
+        state.lastScreen=document.querySelector('.screen:not(.hidden)')?.id||null;
+        goTo('payment');
+    }
+    function selectPayment(type){
+        document.getElementById('payment-full-box').classList.add('hidden');
+        document.getElementById('payment-half-box').classList.add('hidden');
+        document.getElementById('pay-total').textContent=state.paymentTotal+' руб.';
+        if(type==='full'){
+            document.getElementById('payment-full-box').classList.remove('hidden');
+            document.getElementById('pay-full-amount').textContent=state.paymentTotal+' руб.';
+        } else {
+            document.getElementById('payment-half-box').classList.remove('hidden');
+            document.getElementById('pay-half-amount').textContent=Math.floor(state.paymentTotal/2)+' руб.';
+        }
+    }
+    function goBackFromPayment(){
+        document.querySelectorAll('.screen').forEach(e=>e.classList.add('hidden'));
+        if(state.lastScreen){
+            let el=document.getElementById(state.lastScreen);
+            if(el)el.classList.remove('hidden');
+        } else { goTo('main'); }
+    }
+    function resetAll(){
+        state.rank=null;state.qty=null;state.price=0;state.urgentRank=null;state.urgentQty=null;state.urgentPrice=0;
+        state.mapSelected=new Set();state.urgentMapSelected=new Set();
+        state.mapQuest=new Set();state.urgentMapQuest=new Set();
+        state.storySelected=new Set();state.urgentStorySelected=new Set();
+        state.oculusSelected=new Set();state.urgentOculusSelected=new Set();
+        state.repSelected=new Set();
+        state.abThSelected=new Set();state.abAbSelected=new Set();state.abEchoCount=1;state.abEchoPrice=500;
+        state.careSelected=null;state.carePrice=0;state.farmD=0;state.farmR=0;state.farmPrice=0;
+        state.talentPrice=0;state.charLvlPrice=0;state.charCount=1;state.wpnLvlPrice=0;state.wpnCount=1;
+        state.paymentTotal=0;state.lastScreen=null;
+        document.getElementById('promo-input').value='';document.getElementById('promo-result').textContent='';
+    }
+    function resetAndGo(s){resetAll();goTo(s);}
+    function goTo(s){
+        document.querySelectorAll('.screen').forEach(e=>e.classList.add('hidden'));
+        let el=document.getElementById('screen-'+s);
+        if(el)el.classList.remove('hidden');
+        if(s==='map')buildRegions(false);
+        if(s==='urgent-map')buildRegions(true);
+        if(s==='story')buildStory(false);
+        if(s==='urgent-story')buildStory(true);
+        if(s==='oculus')buildOculus(false);
+        if(s==='urgent-oculus')buildOculus(true);
+        if(s==='reputation')buildReputation();
+        if(s==='payment'){
+            document.getElementById('pay-total').textContent=state.paymentTotal+' руб.';
+            document.getElementById('payment-full-box').classList.add('hidden');
+            document.getElementById('payment-half-box').classList.add('hidden');
+        }
+    }
+
+    function buildOculus(u){
+        let list=document.getElementById(u?'urgent-oculus-list':'oculus-list');
+        list.innerHTML='';let set=u?state.urgentOculusSelected:state.oculusSelected;let sur=u?300:0;
+        OCULUS.forEach((o,i)=>{
+            let div=document.createElement('div');div.className='region-item';if(set.has(i))div.classList.add('selected');
+            div.innerHTML='<div class="region-row"><div class="check"></div><div class="region-info"><span>'+o.name+'</span><span class="region-price">'+(o.price+sur)+' руб.</span></div></div>';
+            div.onclick=()=>{if(set.has(i)){set.delete(i);div.classList.remove('selected');}else{set.add(i);div.classList.add('selected');}if(u)updateUrgentOculusTotal();else updateOculusTotal();};
+            list.appendChild(div);
+        });
+        if(u)updateUrgentOculusTotal();else updateOculusTotal();
+    }
+    function updateOculusTotal(){let t=0;state.oculusSelected.forEach(i=>t+=OCULUS[i].price);document.getElementById('oculus-total').textContent=t+' руб.';document.getElementById('oc-submit').disabled=state.oculusSelected.size===0;}
+    function updateUrgentOculusTotal(){let t=0;state.urgentOculusSelected.forEach(i=>t+=OCULUS[i].price+300);document.getElementById('uoculus-total').textContent=t+' руб.';document.getElementById('uoc-submit').disabled=state.urgentOculusSelected.size===0;}
+
+    function buildReputation(){
+        let list=document.getElementById('rep-list');list.innerHTML='';let set=state.repSelected;
+        REPUTATION.forEach((r,i)=>{
+            let div=document.createElement('div');div.className='region-item';if(set.has(i))div.classList.add('selected');
+            div.innerHTML='<div class="region-row"><div class="check"></div><div class="region-info"><span>'+r.name+'</span><span class="region-price">'+r.price+' руб.</span></div></div>';
+            div.onclick=()=>{if(set.has(i)){set.delete(i);div.classList.remove('selected');}else{set.add(i);div.classList.add('selected');}updateRepTotal();};
+            list.appendChild(div);
+        });
+        updateRepTotal();
+    }
+    function updateRepTotal(){let t=0;state.repSelected.forEach(i=>t+=REPUTATION[i].price);document.getElementById('rep-total').textContent=t+' руб.';document.getElementById('rep-submit').disabled=state.repSelected.size===0;}
+
+    function toggleAbyss(type,id,price){
+        let set=type==='th'?state.abThSelected:state.abAbSelected;
+        let elId=(type==='th'?'th-':'ab-')+id;
+        if(set.has(id)){set.delete(id);document.getElementById(elId).classList.remove('selected');}
+        else{set.add(id);document.getElementById(elId).classList.add('selected');}
+        updateAbyssTotal();
+    }
+    function updateEcho(){
+        state.abEchoCount=parseInt(document.getElementById('echo-slider').value);
+        state.abEchoPrice=state.abEchoCount*500;
+        document.getElementById('echo-val').textContent=state.abEchoCount;
+        document.getElementById('echo-price').textContent=state.abEchoPrice+' руб.';
+        updateAbyssTotal();
+    }
+    function updateAbyssTotal(){
+        let t=0;state.abThSelected.forEach(id=>{t+={1:100,2:200,3:300,4:400}[id];});
+        state.abAbSelected.forEach(id=>{t+={1:150,2:250}[id];});
+        t+=state.abEchoPrice;
+        document.getElementById('abyss-total').textContent=t+' руб.';
+        document.getElementById('ab-submit').disabled=(t===0);
+    }
+
+    function selectTalent(t,p){state.talentPrice=p;document.getElementById('tal-1').classList.toggle('selected',t==='1-6');document.getElementById('tal-2').classList.toggle('selected',t==='7-10');document.getElementById('tal-3').classList.toggle('selected',t==='1-10');updateCharTotal();}
+    function updateCharLevel(){
+        let from=parseInt(document.getElementById('char-lvl-from').value)||0;
+        let to=parseInt(document.getElementById('char-lvl-to').value)||0;
+        if(to>90)to=90;
+        state.charLvlPrice=0;
+        if(from>0 && to>from){for(let l=from;l<to;l++) state.charLvlPrice+=(l<60)?5:8;}
+        document.getElementById('char-lvl-price').textContent=state.charLvlPrice+' руб.';
+        updateCharTotal();
+    }
+    function updateCharCount(){
+        state.charCount=parseInt(document.getElementById('char-count-slider').value);
+        document.getElementById('char-count-val').textContent=state.charCount;
+        document.getElementById('char-count-total').textContent='×'+state.charCount+' = '+(state.charLvlPrice*state.charCount)+' руб.';
+        updateCharTotal();
+    }
+    function updateWpnLevel(){
+        let from=parseInt(document.getElementById('wpn-lvl-from').value)||0;
+        let to=parseInt(document.getElementById('wpn-lvl-to').value)||0;
+        if(to>90)to=90;
+        state.wpnLvlPrice=0;
+        if(from>0 && to>from){for(let l=from;l<to;l++) state.wpnLvlPrice+=(l<60)?5:8;}
+        document.getElementById('wpn-lvl-price').textContent=state.wpnLvlPrice+' руб.';
+        updateCharTotal();
+    }
+    function updateWpnCount(){
+        state.wpnCount=parseInt(document.getElementById('wpn-count-slider').value);
+        document.getElementById('wpn-count-val').textContent=state.wpnCount;
+        document.getElementById('wpn-count-total').textContent='×'+state.wpnCount+' = '+(state.wpnLvlPrice*state.wpnCount)+' руб.';
+        updateCharTotal();
+    }
+    function updateCharTotal(){
+        let total=state.talentPrice+state.charLvlPrice*state.charCount+state.wpnLvlPrice*state.wpnCount;
+        document.getElementById('char-total').textContent=total+' руб.';
+        document.getElementById('char-submit').disabled=(total===0);
+    }
+
+    function selectCare(c){
+        state.careSelected=c;state.carePrice=CARE_PRICES[c].p;
+        for(let i=1;i<=3;i++)document.getElementById('care-'+i).classList.remove('selected');
+        document.getElementById('care-'+c).classList.add('selected');
+        document.getElementById('care-total').textContent=state.carePrice+' руб.';
+        document.getElementById('care-submit').disabled=false;
+    }
+
+    function updateFarmTotal(){
+        state.farmD=parseInt(document.getElementById('farm-dikovina').value)||0;
+        state.farmR=parseInt(document.getElementById('farm-ruda').value)||0;
+        state.farmPrice=state.farmD*1+state.farmR*2;
+        document.getElementById('farm-total').textContent=state.farmPrice+' руб.';
+        document.getElementById('farm-submit').disabled=(state.farmD===0&&state.farmR===0);
+    }
+
+    function selectRank(r,urgent){
+        if(urgent){state.urgentRank=r;for(let i=1;i<=4;i++)document.getElementById('urank-'+i).classList.remove('selected');document.getElementById('urank-'+r).classList.add('selected');document.getElementById('uto-step2').disabled=false;}
+        else{state.rank=r;for(let i=1;i<=4;i++)document.getElementById('rank-'+i).classList.remove('selected');document.getElementById('rank-'+r).classList.add('selected');document.getElementById('to-step2').disabled=false;}
+    }
+    function pullsBackToStep1(u){
+        if(u){document.getElementById('upstep2').classList.remove('active','done');document.getElementById('upstep1').classList.add('active');document.getElementById('urgent-pulls-step2').classList.add('hidden');document.getElementById('urgent-pulls-step1').classList.remove('hidden');document.getElementById('uto-step3').classList.add('hidden');document.getElementById('uto-step2').disabled=false;state.urgentQty=null;state.urgentPrice=0;document.querySelectorAll('#uqty-list .choice-btn').forEach(b=>b.classList.remove('selected'));}
+        else{document.getElementById('pstep2').classList.remove('active','done');document.getElementById('pstep1').classList.add('active');document.getElementById('pulls-step2').classList.add('hidden');document.getElementById('pulls-step1').classList.remove('hidden');document.getElementById('to-step3').classList.add('hidden');document.getElementById('to-step2').disabled=false;state.qty=null;state.price=0;document.querySelectorAll('#qty-list .choice-btn').forEach(b=>b.classList.remove('selected'));}
+    }
+    function pullsBackToStep2(u){
+        if(u){document.getElementById('upstep3').classList.remove('active','done');document.getElementById('upstep2').classList.add('active');document.getElementById('urgent-pulls-step3').classList.add('hidden');document.getElementById('urgent-pulls-step2').classList.remove('hidden');}
+        else{document.getElementById('pstep3').classList.remove('active','done');document.getElementById('pstep2').classList.add('active');document.getElementById('pulls-step3').classList.add('hidden');document.getElementById('pulls-step2').classList.remove('hidden');}
+    }
+    function pullsStep2(u){
+        let pp=u?RANK_PRICES[state.urgentRank].u:RANK_PRICES[state.rank].n;
+        if(u){document.getElementById('upstep1').classList.replace('active','done');document.getElementById('upstep2').classList.add('active');document.getElementById('urgent-pulls-step1').classList.add('hidden');document.getElementById('urgent-pulls-step2').classList.remove('hidden');let l=document.getElementById('uqty-list');l.innerHTML='';for(let q=10;q<=300;q+=10){let t=q*pp;let b=document.createElement('button');b.className='choice-btn';b.textContent=q+' круток — '+t+' руб.';b.onclick=()=>{state.urgentQty=q;state.urgentPrice=t;document.querySelectorAll('#uqty-list .choice-btn').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');document.getElementById('uto-step3').classList.remove('hidden');};l.appendChild(b);}}
+        else{document.getElementById('pstep1').classList.replace('active','done');document.getElementById('pstep2').classList.add('active');document.getElementById('pulls-step1').classList.add('hidden');document.getElementById('pulls-step2').classList.remove('hidden');let l=document.getElementById('qty-list');l.innerHTML='';for(let q=10;q<=300;q+=10){let t=q*pp;let b=document.createElement('button');b.className='choice-btn';b.textContent=q+' круток — '+t+' руб.';b.onclick=()=>{state.qty=q;state.price=t;document.querySelectorAll('#qty-list .choice-btn').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');document.getElementById('to-step3').classList.remove('hidden');};l.appendChild(b);}}
+    }
+    function pullsStep3(u){
+        if(u){document.getElementById('upstep2').classList.replace('active','done');document.getElementById('upstep3').classList.add('active');document.getElementById('urgent-pulls-step2').classList.add('hidden');document.getElementById('urgent-pulls-step3').classList.remove('hidden');document.getElementById('up-total').textContent='Итого: '+state.urgentQty+' круток — '+state.urgentPrice+' руб.';document.getElementById('up-submit').disabled=false;}
+        else{document.getElementById('pstep2').classList.replace('active','done');document.getElementById('pstep3').classList.add('active');document.getElementById('pulls-step2').classList.add('hidden');document.getElementById('pulls-step3').classList.remove('hidden');document.getElementById('p-total').textContent='Итого: '+state.qty+' круток — '+state.price+' руб.';document.getElementById('p-submit').disabled=false;}
+    }
+
+    function updateRegionPrice(i,urgent){
+        let set=urgent?state.urgentMapSelected:state.mapSelected;
+        let qset=urgent?state.urgentMapQuest:state.mapQuest;
+        let r=REGIONS[i];
+        let sur=urgent?300:0;
+        let selected=set.has(i);
+        let hasQ=selected?qset.has(i):true;
+        let qadd=(!EXCLUDE_QUEST.includes(r.name) && !hasQ)?(urgent?500:300):0;
+        let dp=r.price+sur+qadd;
+        let priceEl=document.getElementById((urgent?'urprice-':'rprice-')+i);
+        if(priceEl) priceEl.textContent=dp+' руб.';
+    }
+
+    function selectQuest(i,val,urgent){
+        let qset=urgent?state.urgentMapQuest:state.mapQuest;
+        if(val){qset.add(i);}else{qset.delete(i);}
+        if(urgent)updateUrgentMapTotal();else updateMapTotal();
+        updateQuestButtons(i,urgent);
+        updateRegionPrice(i,urgent);
+    }
+    function updateQuestButtons(i,urgent){
+        let qset=urgent?state.urgentMapQuest:state.mapQuest;
+        let has=qset.has(i);
+        let yesBtn=document.getElementById((urgent?'uqyes-':'qyes-')+i);
+        let noBtn=document.getElementById((urgent?'uqno-':'qno-')+i);
+        if(yesBtn){yesBtn.classList.toggle('selected',has);}
+        if(noBtn){noBtn.classList.toggle('selected',!has);}
+    }
+    function buildRegions(u){
+        let list=document.getElementById(u?'urgent-regions-list':'regions-list');
+        list.innerHTML='';
+        let set=u?state.urgentMapSelected:state.mapSelected;
+        let qset=u?state.urgentMapQuest:state.mapQuest;
+        REGIONS.forEach((r,i)=>{
+            let div=document.createElement('div');div.className='region-item';if(set.has(i))div.classList.add('selected');
+            let sur=u?300:0;
+            let selected=set.has(i);
+            let hasQ=selected?qset.has(i):true;
+            let qadd=(!EXCLUDE_QUEST.includes(r.name) && !hasQ)?(u?500:300):0;
+            let dp=r.price+sur+qadd;
+            let questHTML='';
+            if(!EXCLUDE_QUEST.includes(r.name)){
+                questHTML='<div class="quest-box"><div class="quest-hint">Пройдены ли задания, квесты или сюжеты, открывающие все локации в этом регионе?</div><div class="yesno-row"><button class="yesno-btn '+(hasQ?'selected':'')+'" id="'+(u?'uqyes-':'qyes-')+i+'" onclick="event.stopPropagation();selectQuest('+i+',true,'+u+')">Да</button><button class="yesno-btn '+(!hasQ?'selected':'')+'" id="'+(u?'uqno-':'qno-')+i+'" onclick="event.stopPropagation();selectQuest('+i+',false,'+u+')">Нет</button></div></div>';
+            }
+            div.innerHTML='<div class="region-row"><div class="check"></div><div class="region-info"><span>'+r.name+'</span><span class="region-price" id="'+(u?'urprice-':'rprice-')+i+'">'+dp+' руб.</span></div></div>'+questHTML;
+            div.onclick=function(e){
+                if(e.target.closest('.yesno-btn')||e.target.closest('.quest-box'))return;
+                if(set.has(i)){
+                    set.delete(i);div.classList.remove('selected');qset.delete(i);
+                } else {
+                    set.add(i);div.classList.add('selected');qset.add(i);
+                }
+                if(u)updateUrgentMapTotal();else updateMapTotal();
+                if(set.has(i))updateQuestButtons(i,u);
+                updateRegionPrice(i,u);
+            };
+            list.appendChild(div);
+        });
+        if(u)updateUrgentMapTotal();else updateMapTotal();
+    }
+    function updateMapTotal(){
+        let t=0;state.mapSelected.forEach(i=>{
+            let p=REGIONS[i].price;
+            if(!EXCLUDE_QUEST.includes(REGIONS[i].name) && !state.mapQuest.has(i)) p+=300;
+            t+=p;
+        });
+        document.getElementById('map-total').textContent=t+' руб.';
+        document.getElementById('m-submit').disabled=state.mapSelected.size===0;
+    }
+    function updateUrgentMapTotal(){
+        let t=0;state.urgentMapSelected.forEach(i=>{
+            let p=REGIONS[i].price;
+            if(!EXCLUDE_QUEST.includes(REGIONS[i].name) && !state.urgentMapQuest.has(i)) p+=500;
+            t+=p+300;
+        });
+        document.getElementById('umap-total').textContent=t+' руб.';
+        document.getElementById('um-submit').disabled=state.urgentMapSelected.size===0;
+    }
+
+    function buildStory(u){
+        let list=document.getElementById(u?'urgent-story-list':'story-list');
+        list.innerHTML='';let set=u?state.urgentStorySelected:state.storySelected;let sur=u?100:0;
+        STORY.forEach((s,i)=>{
+            let div=document.createElement('div');div.className='region-item';if(set.has(i))div.classList.add('selected');
+            div.innerHTML='<div class="region-row"><div class="check"></div><div class="region-info"><span>'+s.name+'</span><span class="region-price">'+(s.price+sur)+' руб.</span></div></div>';
+            div.onclick=()=>{if(set.has(i)){set.delete(i);div.classList.remove('selected');}else{set.add(i);div.classList.add('selected');}if(u)updateUrgentStoryTotal();else updateStoryTotal();};
+            list.appendChild(div);
+        });
+        if(u)updateUrgentStoryTotal();else updateStoryTotal();
+    }
+    function updateStoryTotal(){let t=0;state.storySelected.forEach(i=>t+=STORY[i].price);document.getElementById('story-total').textContent=t+' руб.';document.getElementById('story-form').classList.toggle('hidden',state.storySelected.size===0);}
+    function updateUrgentStoryTotal(){let t=0;state.urgentStorySelected.forEach(i=>t+=STORY[i].price+100);document.getElementById('ustory-total').textContent=t+' руб.';document.getElementById('urgent-story-form').classList.toggle('hidden',state.urgentStorySelected.size===0);}
+
+    function activatePromo(){document.getElementById('promo-result').textContent='Промокод отправлен!';}
+</script>
+</body>
+</html>
