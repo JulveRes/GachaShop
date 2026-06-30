@@ -58,7 +58,6 @@
             min-height: 100vh; padding: 16px; padding-bottom: 40px; transition: all 0.3s;
             position: relative; overflow-x: hidden;
         }
-        /* Лепестки сакуры (тёмная тема) — прозрачнее и медленнее */
         .petal {
             position: fixed; pointer-events: none; z-index: 0;
             opacity: 0; animation: fall linear infinite;
@@ -69,7 +68,6 @@
             80% { opacity: 0.12; }
             100% { transform: translateY(110vh) rotate(540deg) translateX(var(--drift)); opacity: 0; }
         }
-        /* Листочки (светлая тема) */
         .leaf {
             position: fixed; pointer-events: none; z-index: 0;
             opacity: 0; animation: leafFall linear infinite;
@@ -611,51 +609,17 @@
     <div class="back-row"><button class="back-btn" onclick="goBackFromPayment()">← Назад</button><span class="screen-title">Способ оплаты</span></div>
     <div class="total-bar"><div class="label">Итого к оплате</div><div class="price" id="pay-total">0 руб.</div></div>
     <div class="section-label">Выберите способ оплаты</div>
-    <button class="choice-btn" onclick="selectPayment('full')" style="font-size:16px;padding:18px;">
-        💰 Оплатить полностью<br><span style="font-size:13px;color:var(--hint);">Вся сумма сразу на карту</span>
-    </button>
-    <button class="choice-btn" onclick="selectPayment('half')" style="font-size:16px;padding:18px;">
-        💳 Внести предоплату 50%<br><span style="font-size:13px;color:var(--hint);">Половина сейчас, остальное — напрямую качеру после выполнения половины заказа</span>
-    </button>
+    <button class="choice-btn" onclick="selectPayment('full')" style="font-size:16px;padding:18px;">💰 Оплатить полностью<br><span style="font-size:13px;color:var(--hint);">Вся сумма сразу на карту</span></button>
+    <button class="choice-btn" onclick="selectPayment('half')" style="font-size:16px;padding:18px;">💳 Внести предоплату 50%<br><span style="font-size:13px;color:var(--hint);">Половина сейчас, остальное — напрямую качеру после выполнения половины заказа</span></button>
     <div id="payment-full-box" class="hidden">
-        <div class="requisites">
-            <div class="title">РЕКВИЗИТЫ ДЛЯ ОПЛАТЫ</div>
-            <div class="info">
-                Карта: 2200 7013 9958 3951 (Т-Банк)<br>
-                Получатель: Юлия Р.<br>
-                Сумма: <span id="pay-full-amount">0 руб.</span>
-            </div>
-        </div>
-        <div class="instructions">
-            <div class="title">ЧТО ДЕЛАТЬ ДАЛЬШЕ</div>
-            <ol>
-                <li>Оплатите полную сумму по реквизитам выше</li>
-                <li>Нажмите кнопку ниже</li>
-                <li>Отправьте скриншот оплаты в чат с ботом</li>
-            </ol>
-        </div>
-        <button class="btn-primary" onclick="goTo('success');resetAll();">Оформить заказ</button>
+        <div class="requisites"><div class="title">РЕКВИЗИТЫ ДЛЯ ОПЛАТЫ</div><div class="info">Карта: 2200 7013 9958 3951 (Т-Банк)<br>Получатель: Юлия Р.<br>Сумма: <span id="pay-full-amount">0 руб.</span></div></div>
+        <div class="instructions"><div class="title">ЧТО ДЕЛАТЬ ДАЛЬШЕ</div><ol><li>Оплатите полную сумму по реквизитам выше</li><li>Нажмите кнопку ниже</li><li>Отправьте скриншот оплаты в чат с ботом</li></ol></div>
+        <button class="btn-primary" onclick="goTo('success')">Оформить заказ</button>
     </div>
     <div id="payment-half-box" class="hidden">
-        <div class="requisites">
-            <div class="title">РЕКВИЗИТЫ ДЛЯ ПРЕДОПЛАТЫ 50%</div>
-            <div class="info">
-                Карта: 2200 7013 9958 3951 (Т-Банк)<br>
-                Получатель: Юлия Р.<br>
-                Сумма к оплате сейчас: <span id="pay-half-amount">0 руб.</span><br>
-                <span style="font-size:12px;color:var(--hint);">Оставшиеся 50% оплачиваются напрямую качеру<br>после выполнения половины заказа</span>
-            </div>
-        </div>
-        <div class="instructions">
-            <div class="title">ЧТО ДЕЛАТЬ ДАЛЬШЕ</div>
-            <ol>
-                <li>Оплатите 50% по реквизитам выше</li>
-                <li>Нажмите кнопку ниже</li>
-                <li>Отправьте скриншот оплаты в чат с ботом</li>
-                <li>Оставшиеся 50% оплатите напрямую качеру после выполнения половины заказа</li>
-            </ol>
-        </div>
-        <button class="btn-primary" onclick="goTo('success');resetAll();">Оформить заказ</button>
+        <div class="requisites"><div class="title">РЕКВИЗИТЫ ДЛЯ ПРЕДОПЛАТЫ 50%</div><div class="info">Карта: 2200 7013 9958 3951 (Т-Банк)<br>Получатель: Юлия Р.<br>Сумма к оплате сейчас: <span id="pay-half-amount">0 руб.</span><br><span style="font-size:12px;color:var(--hint);">Оставшиеся 50% оплачиваются напрямую качеру после выполнения половины заказа</span></div></div>
+        <div class="instructions"><div class="title">ЧТО ДЕЛАТЬ ДАЛЬШЕ</div><ol><li>Оплатите 50% по реквизитам выше</li><li>Нажмите кнопку ниже</li><li>Отправьте скриншот оплаты в чат с ботом</li><li>Оставшиеся 50% оплатите напрямую качеру после выполнения половины заказа</li></ol></div>
+        <button class="btn-primary" onclick="goTo('success')">Оформить заказ</button>
     </div>
 </div>
 
@@ -669,7 +633,7 @@
 <div id="screen-profile" class="screen hidden">
     <div class="back-row"><button class="back-btn" onclick="goTo('main')">← Назад</button><span class="screen-title">Профиль</span></div>
     <div class="profile-info"><p>Нажмите для загрузки профиля Telegram</p><p style="font-size:11px;opacity:0.7;">(без авторизации, Telegram передаст данные автоматически)</p></div>
-    <button class="btn-full" onclick="alert('Загрузка...')">Загрузить профиль</button>
+    <button class="btn-full" onclick="loadProfile()">Загрузить профиль</button>
 </div>
 
 <div id="screen-success" class="screen hidden">
@@ -677,7 +641,7 @@
     <div class="success-title">Заказ оформлен!</div>
     <div class="success-order">Приложение закроется.<br>Бот пришлёт реквизиты для оплаты.</div>
     <p class="thanks">Спасибо что выбрали нас!</p>
-    <button class="btn-primary" onclick="resetAndGo('main')">На главную</button>
+    <button class="btn-primary" onclick="goTo('main')">На главную</button>
 </div>
 
 <script>
@@ -745,7 +709,7 @@
     function createLeaves(){
         const container=document.getElementById('leaves-container');
         container.innerHTML='';
-        const leaves=['🍁'];
+        const leaves=['🍂','🍁','🌾','🍃','🌿'];
         for(let i=0;i<18;i++){
             const leaf=document.createElement('div');
             leaf.className='leaf';
@@ -1070,6 +1034,10 @@
     function updateStoryTotal(){let t=0;state.storySelected.forEach(i=>t+=STORY[i].price);document.getElementById('story-total').textContent=t+' руб.';document.getElementById('story-form').classList.toggle('hidden',state.storySelected.size===0);}
     function updateUrgentStoryTotal(){let t=0;state.urgentStorySelected.forEach(i=>t+=STORY[i].price+100);document.getElementById('ustory-total').textContent=t+' руб.';document.getElementById('urgent-story-form').classList.toggle('hidden',state.urgentStorySelected.size===0);}
 
+    function loadProfile(){
+        const tg = window.Telegram.WebApp;
+        tg.sendData(JSON.stringify({action:'get_profile'}));
+    }
     function activatePromo(){document.getElementById('promo-result').textContent='Промокод отправлен!';}
 </script>
 </body>
