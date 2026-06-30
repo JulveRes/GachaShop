@@ -253,7 +253,7 @@
         <input type="text" id="p-promo" placeholder="Промокод (если есть)">
         <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="p-deadline" placeholder="Дедлайн"><p class="error-msg" id="p-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
         <p style="text-align:center;font-weight:700;margin:12px 0;" id="p-total"></p>
-        <button class="btn-primary" id="p-submit" disabled onclick="if(validateAll(['p-username','p-deadline'])){sendOrder('pulls',false);}">Оформить заказ</button>
+        <button class="btn-primary" id="p-submit" disabled onclick="if(validateAll(['p-username','p-deadline'])){goToPayment('pulls',false);}">Оформить заказ</button>
         <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
     </div>
 </div>
@@ -289,7 +289,7 @@
         <input type="text" id="up-promo" placeholder="Промокод (если есть)">
         <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="up-deadline" placeholder="Дедлайн"><p class="error-msg" id="up-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
         <p style="text-align:center;font-weight:700;margin:12px 0;" id="up-total"></p>
-        <button class="btn-primary" id="up-submit" disabled onclick="if(validateAll(['up-username','up-deadline'])){sendOrder('pulls',true);}">Оформить срочный заказ</button>
+        <button class="btn-primary" id="up-submit" disabled onclick="if(validateAll(['up-username','up-deadline'])){goToPayment('pulls',true);}">Оформить срочный заказ</button>
         <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
     </div>
 </div>
@@ -304,7 +304,7 @@
     <input type="text" id="m-username" placeholder="TG username"><p class="error-msg" id="m-username-error">Укажите Telegram username!</p>
     <input type="text" id="m-promo" placeholder="Промокод (если есть)">
     <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="m-deadline" placeholder="Дедлайн"><p class="error-msg" id="m-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
-    <button class="btn-primary" id="m-submit" disabled onclick="if(validateAll(['m-username','m-deadline']))sendOrder('map',false)">Оформить заказ</button>
+    <button class="btn-primary" id="m-submit" disabled onclick="if(validateAll(['m-username','m-deadline']))goToPayment('map',false)">Оформить заказ</button>
     <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
 </div>
 
@@ -318,7 +318,7 @@
     <input type="text" id="um-username" placeholder="TG username"><p class="error-msg" id="um-username-error">Укажите Telegram username!</p>
     <input type="text" id="um-promo" placeholder="Промокод (если есть)">
     <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="um-deadline" placeholder="Дедлайн"><p class="error-msg" id="um-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
-    <button class="btn-primary" id="um-submit" disabled onclick="if(validateAll(['um-username','um-deadline']))sendOrder('map',true)" style="background:var(--urgent);">Оформить срочный заказ</button>
+    <button class="btn-primary" id="um-submit" disabled onclick="if(validateAll(['um-username','um-deadline']))goToPayment('map',true)" style="background:var(--urgent);">Оформить срочный заказ</button>
     <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
 </div>
 
@@ -332,7 +332,7 @@
         <input type="text" id="s-username" placeholder="TG username"><p class="error-msg" id="s-username-error">Укажите Telegram username!</p>
         <input type="text" id="s-promo" placeholder="Промокод (если есть)">
         <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="s-deadline" placeholder="Дедлайн"><p class="error-msg" id="s-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
-        <button class="btn-primary" onclick="if(validateAll(['s-username','s-deadline']))sendOrder('story',false)">Оформить заказ</button>
+        <button class="btn-primary" onclick="if(validateAll(['s-username','s-deadline']))goToPayment('story',false)">Оформить заказ</button>
     </div>
 </div>
 
@@ -347,7 +347,7 @@
         <input type="text" id="us-username" placeholder="TG username"><p class="error-msg" id="us-username-error">Укажите Telegram username!</p>
         <input type="text" id="us-promo" placeholder="Промокод (если есть)">
         <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="us-deadline" placeholder="Дедлайн"><p class="error-msg" id="us-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
-        <button class="btn-primary" onclick="if(validateAll(['us-username','us-deadline']))sendOrder('story',true)" style="background:var(--urgent);">Оформить срочный заказ</button>
+        <button class="btn-primary" onclick="if(validateAll(['us-username','us-deadline']))goToPayment('story',true)" style="background:var(--urgent);">Оформить срочный заказ</button>
     </div>
 </div>
 
@@ -360,7 +360,7 @@
     <input type="text" id="oc-username" placeholder="TG username"><p class="error-msg" id="oc-username-error">Укажите Telegram username!</p>
     <input type="text" id="oc-promo" placeholder="Промокод (если есть)">
     <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="oc-deadline" placeholder="Дедлайн"><p class="error-msg" id="oc-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
-    <button class="btn-primary" id="oc-submit" disabled onclick="if(validateAll(['oc-username','oc-deadline']))sendOrder('oculus',false)">Оформить заказ</button>
+    <button class="btn-primary" id="oc-submit" disabled onclick="if(validateAll(['oc-username','oc-deadline']))goToPayment('oculus',false)">Оформить заказ</button>
     <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
 </div>
 
@@ -374,7 +374,7 @@
     <input type="text" id="uoc-username" placeholder="TG username"><p class="error-msg" id="uoc-username-error">Укажите Telegram username!</p>
     <input type="text" id="uoc-promo" placeholder="Промокод (если есть)">
     <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="uoc-deadline" placeholder="Дедлайн"><p class="error-msg" id="uoc-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
-    <button class="btn-primary" id="uoc-submit" disabled onclick="if(validateAll(['uoc-username','uoc-deadline']))sendOrder('oculus',true)" style="background:var(--urgent);">Оформить срочный заказ</button>
+    <button class="btn-primary" id="uoc-submit" disabled onclick="if(validateAll(['uoc-username','uoc-deadline']))goToPayment('oculus',true)" style="background:var(--urgent);">Оформить срочный заказ</button>
     <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
 </div>
 
@@ -387,7 +387,7 @@
     <input type="text" id="rep-username" placeholder="TG username"><p class="error-msg" id="rep-username-error">Укажите Telegram username!</p>
     <input type="text" id="rep-promo" placeholder="Промокод (если есть)">
     <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="rep-deadline" placeholder="Дедлайн"><p class="error-msg" id="rep-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
-    <button class="btn-primary" id="rep-submit" disabled onclick="if(validateAll(['rep-username','rep-deadline']))sendOrder('reputation',false)">Оформить заказ</button>
+    <button class="btn-primary" id="rep-submit" disabled onclick="if(validateAll(['rep-username','rep-deadline']))goToPayment('reputation',false)">Оформить заказ</button>
     <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
 </div>
 
@@ -415,7 +415,7 @@
     <input type="text" id="ab-username" placeholder="TG username"><p class="error-msg" id="ab-username-error">Укажите Telegram username!</p>
     <input type="text" id="ab-promo" placeholder="Промокод (если есть)">
     <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="ab-deadline" placeholder="Дедлайн"><p class="error-msg" id="ab-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
-    <button class="btn-primary" id="ab-submit" disabled onclick="if(validateAll(['ab-username','ab-deadline']))sendOrder('abyss',false)">Оформить заказ</button>
+    <button class="btn-primary" id="ab-submit" disabled onclick="if(validateAll(['ab-username','ab-deadline']))goToPayment('abyss',false)">Оформить заказ</button>
     <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
 </div>
 
@@ -449,7 +449,7 @@
     <input type="text" id="char-username" placeholder="TG username"><p class="error-msg" id="char-username-error">Укажите Telegram username!</p>
     <input type="text" id="char-promo" placeholder="Промокод (если есть)">
     <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="char-deadline" placeholder="Дедлайн"><p class="error-msg" id="char-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
-    <button class="btn-primary" id="char-submit" disabled onclick="if(validateAll(['char-username','char-deadline']))sendOrder('char-up',false)">Оформить заказ</button>
+    <button class="btn-primary" id="char-submit" disabled onclick="if(validateAll(['char-username','char-deadline']))goToPayment('char-up',false)">Оформить заказ</button>
     <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
 </div>
 
@@ -466,7 +466,7 @@
     <input type="text" id="care-username" placeholder="TG username"><p class="error-msg" id="care-username-error">Укажите Telegram username!</p>
     <input type="text" id="care-promo" placeholder="Промокод (если есть)">
     <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="care-deadline" placeholder="Дедлайн"><p class="error-msg" id="care-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
-    <button class="btn-primary" id="care-submit" disabled onclick="if(validateAll(['care-username','care-deadline']))sendOrder('care',false)">Оформить заказ</button>
+    <button class="btn-primary" id="care-submit" disabled onclick="if(validateAll(['care-username','care-deadline']))goToPayment('care',false)">Оформить заказ</button>
 </div>
 
 <div id="screen-farm" class="screen hidden">
@@ -483,7 +483,7 @@
     <input type="text" id="farm-username" placeholder="TG username"><p class="error-msg" id="farm-username-error">Укажите Telegram username!</p>
     <input type="text" id="farm-promo" placeholder="Промокод (если есть)">
     <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="farm-deadline" placeholder="Дедлайн"><p class="error-msg" id="farm-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
-    <button class="btn-primary" id="farm-submit" disabled onclick="if(validateAll(['farm-username','farm-deadline']))sendOrder('farm',false)">Оформить заказ</button>
+    <button class="btn-primary" id="farm-submit" disabled onclick="if(validateAll(['farm-username','farm-deadline']))goToPayment('farm',false)">Оформить заказ</button>
 </div>
 
 <div id="screen-payment" class="screen hidden">
@@ -570,7 +570,7 @@
         paymentTotal:0,lastScreen:null
     };
 
-    function sendOrder(type, urgent) {
+    function goToPayment(type, urgent) {
         const tg = window.Telegram.WebApp;
         let order = {service:'', details:'', price:0, username:'', deadline:'', category:type, restrictions:'', promo_code:''};
         let prefix = '';
