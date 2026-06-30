@@ -22,9 +22,9 @@
             --profile-bg: #282450; --profile-border: #3d3570;
             --note: #7b7098; --note-link: #b090d8;
             --yesno-bg: #1e1a40; --yesno-border: #3d3570;
-            --yesno-text: #e0d8f0;
-            --divider: #3d3570; --shadow: rgba(90,70,150,0.2);
-            --slider-track: #3d3570; --slider-thumb: #8b7ec8; --error: #e48a9e;
+            --yesno-text: #e0d8f0; --divider: #3d3570;
+            --shadow: rgba(90,70,150,0.2); --slider-track: #3d3570;
+            --slider-thumb: #8b7ec8; --error: #e48a9e;
         }
         body.light {
             --bg: #F5F0E8; --text: #4A3728; --card: #EDE4D3; --card2: #F5F0E8;
@@ -194,11 +194,13 @@
     <button class="btn-full" style="opacity:0.4;">🚂 Honkai Star Rail (скоро)</button>
     <button class="btn-full" style="opacity:0.4;">🌀 Zenless Zone Zero (скоро)</button>
 </div>
+
 <div id="screen-urgent-services" class="screen hidden">
     <div class="back-row"><button class="back-btn" onclick="goTo('main')">← Назад</button><span class="screen-title">⚡ Срочный заказ</span></div>
     <div class="speed-info"><div class="speed-title">⚡ СРОЧНОЕ ВЫПОЛНЕНИЕ</div><div class="speed-desc">В 2 раза быстрее. Наценка включена в цены.</div></div>
     <button class="btn-full" onclick="goTo('urgent-pulls')" style="background:var(--urgent);">🎲 Genshin Impact (СРОЧНО)</button>
 </div>
+
 <div id="screen-pulls" class="screen hidden">
     <div class="back-row"><button class="back-btn" onclick="goTo('services')">← Назад</button><span class="screen-title">Genshin Impact</span></div>
     <button class="btn-full" onclick="resetAndGo('pulls-order')">🎲 Заказ круток</button>
@@ -211,6 +213,7 @@
     <button class="btn-full" onclick="resetAndGo('care')">💎 Уход за аккаунтом</button>
     <button class="btn-full" onclick="resetAndGo('farm')">🌿 Сбор ресурсов</button>
 </div>
+
 <div id="screen-urgent-pulls" class="screen hidden">
     <div class="back-row"><button class="back-btn" onclick="goTo('urgent-services')">← Назад</button><span class="screen-title">⚡ Genshin (СРОЧНО)</span></div>
     <button class="btn-full" onclick="resetAndGo('urgent-pulls-order')" style="background:var(--urgent);">🎲 Заказ круток (СРОЧНО)</button>
@@ -296,8 +299,7 @@
     <div class="section-label">Отметьте регионы</div>
     <div id="regions-list"></div>
     <div class="total-bar"><div class="label">Итого к оплате</div><div class="price" id="map-total">0 руб.</div></div>
-    <div class="section-label">Ограничения по заказу</div>
-    <textarea id="m-restrictions" placeholder="Что нельзя делать..."></textarea>
+    <div class="section-label">Ограничения по заказу</div><textarea id="m-restrictions" placeholder="Что нельзя делать..."></textarea>
     <p class="hint-text">Укажите, что нельзя трогать, тратить или менять</p>
     <input type="text" id="m-username" placeholder="TG username"><p class="error-msg" id="m-username-error">Укажите Telegram username!</p>
     <input type="text" id="m-promo" placeholder="Промокод (если есть)">
@@ -309,11 +311,9 @@
 <div id="screen-urgent-map" class="screen hidden">
     <div class="back-row"><button class="back-btn" onclick="resetAndGo('urgent-pulls')">← Назад</button><span class="screen-title">⚡ Зачистка (СРОЧНО)</span></div>
     <div class="speed-info"><div class="speed-title">⚡ СРОЧНОЕ ВЫПОЛНЕНИЕ</div><div class="speed-desc">В 2 раза быстрее. Наценка +300 руб к локации.</div></div>
-    <div class="section-label">Отметьте регионы</div>
-    <div id="urgent-regions-list"></div>
+    <div class="section-label">Отметьте регионы</div><div id="urgent-regions-list"></div>
     <div class="total-bar urgent-bar"><div class="label">Итого к оплате (срочно)</div><div class="price" id="umap-total">0 руб.</div></div>
-    <div class="section-label">Ограничения по заказу</div>
-    <textarea id="um-restrictions" placeholder="Что нельзя делать..."></textarea>
+    <div class="section-label">Ограничения по заказу</div><textarea id="um-restrictions" placeholder="Что нельзя делать..."></textarea>
     <p class="hint-text">Укажите, что нельзя трогать, тратить или менять</p>
     <input type="text" id="um-username" placeholder="TG username"><p class="error-msg" id="um-username-error">Укажите Telegram username!</p>
     <input type="text" id="um-promo" placeholder="Промокод (если есть)">
@@ -324,12 +324,10 @@
 
 <div id="screen-story" class="screen hidden">
     <div class="back-row"><button class="back-btn" onclick="resetAndGo('pulls')">← Назад</button><span class="screen-title">Прохождение квестов</span></div>
-    <div class="section-label">Выберите квесты</div>
-    <div id="story-list"></div>
+    <div class="section-label">Выберите квесты</div><div id="story-list"></div>
     <div class="total-bar"><div class="label">Итого к оплате</div><div class="price" id="story-total">0 руб.</div></div>
     <div id="story-form" class="hidden">
-        <div class="section-label">Ограничения по заказу</div>
-        <textarea id="s-restrictions" placeholder="Что нельзя делать..."></textarea>
+        <div class="section-label">Ограничения по заказу</div><textarea id="s-restrictions" placeholder="Что нельзя делать..."></textarea>
         <p class="hint-text">Укажите, что нельзя трогать, тратить или менять</p>
         <input type="text" id="s-username" placeholder="TG username"><p class="error-msg" id="s-username-error">Укажите Telegram username!</p>
         <input type="text" id="s-promo" placeholder="Промокод (если есть)">
@@ -341,12 +339,10 @@
 <div id="screen-urgent-story" class="screen hidden">
     <div class="back-row"><button class="back-btn" onclick="resetAndGo('urgent-pulls')">← Назад</button><span class="screen-title">⚡ Квесты (СРОЧНО)</span></div>
     <div class="speed-info"><div class="speed-title">⚡ СРОЧНОЕ ВЫПОЛНЕНИЕ</div><div class="speed-desc">В 2 раза быстрее. +100 руб к квесту.</div></div>
-    <div class="section-label">Выберите квесты</div>
-    <div id="urgent-story-list"></div>
+    <div class="section-label">Выберите квесты</div><div id="urgent-story-list"></div>
     <div class="total-bar urgent-bar"><div class="label">Итого к оплате (срочно)</div><div class="price" id="ustory-total">0 руб.</div></div>
     <div id="urgent-story-form" class="hidden">
-        <div class="section-label">Ограничения по заказу</div>
-        <textarea id="us-restrictions" placeholder="Что нельзя делать..."></textarea>
+        <div class="section-label">Ограничения по заказу</div><textarea id="us-restrictions" placeholder="Что нельзя делать..."></textarea>
         <p class="hint-text">Укажите, что нельзя трогать, тратить или менять</p>
         <input type="text" id="us-username" placeholder="TG username"><p class="error-msg" id="us-username-error">Укажите Telegram username!</p>
         <input type="text" id="us-promo" placeholder="Промокод (если есть)">
@@ -357,11 +353,9 @@
 
 <div id="screen-oculus" class="screen hidden">
     <div class="back-row"><button class="back-btn" onclick="resetAndGo('pulls')">← Назад</button><span class="screen-title">Сбор окулов</span></div>
-    <div class="section-label">Выберите окулы</div>
-    <div id="oculus-list"></div>
+    <div class="section-label">Выберите окулы</div><div id="oculus-list"></div>
     <div class="total-bar"><div class="label">Итого к оплате</div><div class="price" id="oculus-total">0 руб.</div></div>
-    <div class="section-label">Ограничения по заказу</div>
-    <textarea id="oc-restrictions" placeholder="Что нельзя делать..."></textarea>
+    <div class="section-label">Ограничения по заказу</div><textarea id="oc-restrictions" placeholder="Что нельзя делать..."></textarea>
     <p class="hint-text">Укажите, что нельзя трогать, тратить или менять</p>
     <input type="text" id="oc-username" placeholder="TG username"><p class="error-msg" id="oc-username-error">Укажите Telegram username!</p>
     <input type="text" id="oc-promo" placeholder="Промокод (если есть)">
@@ -373,11 +367,9 @@
 <div id="screen-urgent-oculus" class="screen hidden">
     <div class="back-row"><button class="back-btn" onclick="resetAndGo('urgent-pulls')">← Назад</button><span class="screen-title">⚡ Сбор окулов (СРОЧНО)</span></div>
     <div class="speed-info"><div class="speed-title">⚡ СРОЧНОЕ ВЫПОЛНЕНИЕ</div><div class="speed-desc">В 2 раза быстрее. Наценка +300 руб к позиции.</div></div>
-    <div class="section-label">Выберите окулы</div>
-    <div id="urgent-oculus-list"></div>
+    <div class="section-label">Выберите окулы</div><div id="urgent-oculus-list"></div>
     <div class="total-bar urgent-bar"><div class="label">Итого к оплате (срочно)</div><div class="price" id="uoculus-total">0 руб.</div></div>
-    <div class="section-label">Ограничения по заказу</div>
-    <textarea id="uoc-restrictions" placeholder="Что нельзя делать..."></textarea>
+    <div class="section-label">Ограничения по заказу</div><textarea id="uoc-restrictions" placeholder="Что нельзя делать..."></textarea>
     <p class="hint-text">Укажите, что нельзя трогать, тратить или менять</p>
     <input type="text" id="uoc-username" placeholder="TG username"><p class="error-msg" id="uoc-username-error">Укажите Telegram username!</p>
     <input type="text" id="uoc-promo" placeholder="Промокод (если есть)">
@@ -388,11 +380,9 @@
 
 <div id="screen-reputation" class="screen hidden">
     <div class="back-row"><button class="back-btn" onclick="resetAndGo('pulls')">← Назад</button><span class="screen-title">Репутация</span></div>
-    <div class="section-label">Выберите регионы</div>
-    <div id="rep-list"></div>
+    <div class="section-label">Выберите регионы</div><div id="rep-list"></div>
     <div class="total-bar"><div class="label">Итого к оплате</div><div class="price" id="rep-total">0 руб.</div></div>
-    <div class="section-label">Ограничения по заказу</div>
-    <textarea id="rep-restrictions" placeholder="Что нельзя делать..."></textarea>
+    <div class="section-label">Ограничения по заказу</div><textarea id="rep-restrictions" placeholder="Что нельзя делать..."></textarea>
     <p class="hint-text">Укажите, что нельзя трогать, тратить или менять</p>
     <input type="text" id="rep-username" placeholder="TG username"><p class="error-msg" id="rep-username-error">Укажите Telegram username!</p>
     <input type="text" id="rep-promo" placeholder="Промокод (если есть)">
@@ -416,7 +406,7 @@
     </div>
     <div class="range-box"><div class="range-title">Эхо</div>
         <p class="hint-text">Сколько эхо хотите? Одно эхо — 500 руб</p>
-        <div class="slider-row"><span id="echo-val">1</span><input type="range" id="echo-slider" min="1" max="21" value="1" oninput="updateEcho()"><span id="echo-price">500 руб.</span></div>
+        <div class="slider-row"><span id="echo-val">0</span><input type="range" id="echo-slider" min="0" max="21" value="0" oninput="updateEcho()"><span id="echo-price">0 руб.</span></div>
         <div class="section-label">Персонажи для эхо</div><textarea id="echo-chars" placeholder="Список персонажей..."></textarea>
     </div>
     <div class="total-bar"><div class="label">Итого к оплате</div><div class="price" id="abyss-total">0 руб.</div></div>
@@ -487,8 +477,7 @@
         <div><div class="col-label">Руда</div><input type="number" id="farm-ruda" value="0" min="0" onchange="updateFarmTotal()"></div>
     </div>
     <p class="hint-text">Диковина — 1 руб/шт, Руда — 2 руб/шт</p>
-    <div class="section-label">Предпочтения по заказу</div>
-    <textarea id="farm-restrictions" placeholder="Какие именно ресурсы нужны..."></textarea>
+    <div class="section-label">Предпочтения по заказу</div><textarea id="farm-restrictions" placeholder="Какие именно ресурсы нужны..."></textarea>
     <p class="hint-text">Укажите какие именно ресурсы вам нужны</p>
     <div class="total-bar"><div class="label">Итого к оплате</div><div class="price" id="farm-total">0 руб.</div></div>
     <input type="text" id="farm-username" placeholder="TG username"><p class="error-msg" id="farm-username-error">Укажите Telegram username!</p>
@@ -531,7 +520,7 @@
 <div id="screen-success" class="screen hidden">
     <div class="success-icon">✅</div>
     <div class="success-title">Заказ оформлен!</div>
-    <div class="success-order">Приложение закроется.<br>Бот пришлёт реквизиты для оплаты.</div>
+    <div class="success-order">Сверните окно и отправьте скриншот оплаты в чат с ботом.</div>
     <p class="thanks">Спасибо что выбрали нас!</p>
     <button class="btn-primary" onclick="goTo('main')">На главную</button>
 </div>
@@ -576,7 +565,7 @@
         storySelected:new Set(),urgentStorySelected:new Set(),
         oculusSelected:new Set(),urgentOculusSelected:new Set(),
         repSelected:new Set(),
-        abThSelected:new Set(),abAbSelected:new Set(),abEchoCount:1,abEchoPrice:500,
+        abThSelected:new Set(),abAbSelected:new Set(),abEchoCount:0,abEchoPrice:0,
         careSelected:null,carePrice:0,farmD:0,farmR:0,farmPrice:0,
         talentPrice:0,charLvlPrice:0,charCount:1,wpnLvlPrice:0,wpnCount:1,
         paymentTotal:0,lastScreen:null
@@ -593,12 +582,12 @@
     }
     function createLeaves(){
         const c=document.getElementById('leaves-container');c.innerHTML='';
-        const l=['🍂','🍁','🌾','🍃','🌿'];
-        for(let i=0;i<18;i++){
+        const l=['🍁'];
+        for(let i=0;i<15;i++){
             const d=document.createElement('div');d.className='leaf';
-            d.textContent=l[Math.floor(Math.random()*l.length)];
-            d.style.left=Math.random()*100+'%';d.style.fontSize=(10+Math.random()*14)+'px';
-            d.style.animationDuration=(10+Math.random()*12)+'s';d.style.animationDelay=(Math.random()*10)+'s';
+            d.textContent=l[0];
+            d.style.left=Math.random()*100+'%';d.style.fontSize=(12+Math.random()*14)+'px';
+            d.style.animationDuration=(14+Math.random()*14)+'s';d.style.animationDelay=(Math.random()*12)+'s';
             d.style.setProperty('--drift',(Math.random()*60-30)+'px');c.appendChild(d);
         }
     }
@@ -652,7 +641,7 @@
         state.storySelected=new Set();state.urgentStorySelected=new Set();
         state.oculusSelected=new Set();state.urgentOculusSelected=new Set();
         state.repSelected=new Set();
-        state.abThSelected=new Set();state.abAbSelected=new Set();state.abEchoCount=1;state.abEchoPrice=500;
+        state.abThSelected=new Set();state.abAbSelected=new Set();state.abEchoCount=0;state.abEchoPrice=0;
         state.careSelected=null;state.carePrice=0;state.farmD=0;state.farmR=0;state.farmPrice=0;
         state.talentPrice=0;state.charLvlPrice=0;state.charCount=1;state.wpnLvlPrice=0;state.wpnCount=1;
         state.paymentTotal=0;state.lastScreen=null;
