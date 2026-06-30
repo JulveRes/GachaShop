@@ -162,6 +162,8 @@
         .instructions { background: var(--card); border-radius: 14px; padding: 16px; margin: 12px 0; border: 2px solid var(--border); }
         .instructions .title { font-weight: 700; margin-bottom: 10px; text-align: center; color: var(--title); }
         .instructions ol { padding-left: 20px; line-height: 2; font-size: 14px; }
+        .card { background: var(--card); border-radius: 12px; padding: 16px; margin: 12px 0; border: 1px solid var(--border); }
+        .card h3 { color: var(--title); margin-bottom: 8px; font-size: 16px; }
     </style>
 </head>
 <body class="dark">
@@ -176,7 +178,7 @@
         <div class="menu-btn" onclick="goTo('services')"><div class="label">Услуги</div><div class="sub-label">по играм</div></div>
     </div>
     <button class="btn-urgent" onclick="goTo('urgent-services')">⚡ СРОЧНЫЙ ЗАКАЗ</button>
-    <p style="text-align:center;color:var(--price);font-size:12px;margin-top:4px;font-weight:600;">Выполняется в 2 раза быстрее · Наценка за скорость</p>
+    <p style="text-align:center;color:var(--price);font-size:12px;margin-top:4px;font-weight:600;">Выполняется в 2 раза быстрее &middot; Наценка за скорость</p>
     <button class="btn-promo" onclick="resetAndGo('promo')" style="margin-top:16px;">🎁 Промокоды</button>
     <p class="promo-hint">Промокод на скидку 8% ждёт тебя в нашем Telegram-канале!</p>
     <hr class="divider">
@@ -253,7 +255,7 @@
         <input type="text" id="p-promo" placeholder="Промокод (если есть)">
         <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="p-deadline" placeholder="Дедлайн"><p class="error-msg" id="p-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
         <p style="text-align:center;font-weight:700;margin:12px 0;" id="p-total"></p>
-        <button class="btn-primary" id="p-submit" disabled onclick="if(validateAll(['p-username','p-deadline'])){goToPayment('pulls',false);}">Оформить заказ</button>
+        <button class="btn-primary" id="p-submit" disabled onclick="if(validateAll(['p-username','p-deadline'])){setPayment(state.price);goTo('payment');}">Оформить заказ</button>
         <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
     </div>
 </div>
@@ -289,7 +291,7 @@
         <input type="text" id="up-promo" placeholder="Промокод (если есть)">
         <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="up-deadline" placeholder="Дедлайн"><p class="error-msg" id="up-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
         <p style="text-align:center;font-weight:700;margin:12px 0;" id="up-total"></p>
-        <button class="btn-primary" id="up-submit" disabled onclick="if(validateAll(['up-username','up-deadline'])){goToPayment('pulls',true);}">Оформить срочный заказ</button>
+        <button class="btn-primary" id="up-submit" disabled onclick="if(validateAll(['up-username','up-deadline'])){setPayment(state.urgentPrice);goTo('payment');}">Оформить срочный заказ</button>
         <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
     </div>
 </div>
@@ -304,7 +306,7 @@
     <input type="text" id="m-username" placeholder="TG username"><p class="error-msg" id="m-username-error">Укажите Telegram username!</p>
     <input type="text" id="m-promo" placeholder="Промокод (если есть)">
     <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="m-deadline" placeholder="Дедлайн"><p class="error-msg" id="m-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
-    <button class="btn-primary" id="m-submit" disabled onclick="if(validateAll(['m-username','m-deadline']))goToPayment('map',false)">Оформить заказ</button>
+    <button class="btn-primary" id="m-submit" disabled onclick="if(validateAll(['m-username','m-deadline'])){setPayment(parseInt(document.getElementById('map-total').textContent)||0);goTo('payment');}">Оформить заказ</button>
     <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
 </div>
 
@@ -318,7 +320,7 @@
     <input type="text" id="um-username" placeholder="TG username"><p class="error-msg" id="um-username-error">Укажите Telegram username!</p>
     <input type="text" id="um-promo" placeholder="Промокод (если есть)">
     <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="um-deadline" placeholder="Дедлайн"><p class="error-msg" id="um-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
-    <button class="btn-primary" id="um-submit" disabled onclick="if(validateAll(['um-username','um-deadline']))goToPayment('map',true)" style="background:var(--urgent);">Оформить срочный заказ</button>
+    <button class="btn-primary" id="um-submit" disabled onclick="if(validateAll(['um-username','um-deadline'])){setPayment(parseInt(document.getElementById('umap-total').textContent)||0);goTo('payment');}" style="background:var(--urgent);">Оформить срочный заказ</button>
     <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
 </div>
 
@@ -332,7 +334,7 @@
         <input type="text" id="s-username" placeholder="TG username"><p class="error-msg" id="s-username-error">Укажите Telegram username!</p>
         <input type="text" id="s-promo" placeholder="Промокод (если есть)">
         <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="s-deadline" placeholder="Дедлайн"><p class="error-msg" id="s-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
-        <button class="btn-primary" onclick="if(validateAll(['s-username','s-deadline']))goToPayment('story',false)">Оформить заказ</button>
+        <button class="btn-primary" onclick="if(validateAll(['s-username','s-deadline'])){setPayment(parseInt(document.getElementById('story-total').textContent)||0);goTo('payment');}">Оформить заказ</button>
     </div>
 </div>
 
@@ -347,7 +349,7 @@
         <input type="text" id="us-username" placeholder="TG username"><p class="error-msg" id="us-username-error">Укажите Telegram username!</p>
         <input type="text" id="us-promo" placeholder="Промокод (если есть)">
         <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="us-deadline" placeholder="Дедлайн"><p class="error-msg" id="us-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
-        <button class="btn-primary" onclick="if(validateAll(['us-username','us-deadline']))goToPayment('story',true)" style="background:var(--urgent);">Оформить срочный заказ</button>
+        <button class="btn-primary" onclick="if(validateAll(['us-username','us-deadline'])){setPayment(parseInt(document.getElementById('ustory-total').textContent)||0);goTo('payment');}" style="background:var(--urgent);">Оформить срочный заказ</button>
     </div>
 </div>
 
@@ -360,7 +362,7 @@
     <input type="text" id="oc-username" placeholder="TG username"><p class="error-msg" id="oc-username-error">Укажите Telegram username!</p>
     <input type="text" id="oc-promo" placeholder="Промокод (если есть)">
     <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="oc-deadline" placeholder="Дедлайн"><p class="error-msg" id="oc-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
-    <button class="btn-primary" id="oc-submit" disabled onclick="if(validateAll(['oc-username','oc-deadline']))goToPayment('oculus',false)">Оформить заказ</button>
+    <button class="btn-primary" id="oc-submit" disabled onclick="if(validateAll(['oc-username','oc-deadline'])){setPayment(parseInt(document.getElementById('oculus-total').textContent)||0);goTo('payment');}">Оформить заказ</button>
     <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
 </div>
 
@@ -374,7 +376,7 @@
     <input type="text" id="uoc-username" placeholder="TG username"><p class="error-msg" id="uoc-username-error">Укажите Telegram username!</p>
     <input type="text" id="uoc-promo" placeholder="Промокод (если есть)">
     <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="uoc-deadline" placeholder="Дедлайн"><p class="error-msg" id="uoc-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
-    <button class="btn-primary" id="uoc-submit" disabled onclick="if(validateAll(['uoc-username','uoc-deadline']))goToPayment('oculus',true)" style="background:var(--urgent);">Оформить срочный заказ</button>
+    <button class="btn-primary" id="uoc-submit" disabled onclick="if(validateAll(['uoc-username','uoc-deadline'])){setPayment(parseInt(document.getElementById('uoculus-total').textContent)||0);goTo('payment');}" style="background:var(--urgent);">Оформить срочный заказ</button>
     <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
 </div>
 
@@ -387,7 +389,7 @@
     <input type="text" id="rep-username" placeholder="TG username"><p class="error-msg" id="rep-username-error">Укажите Telegram username!</p>
     <input type="text" id="rep-promo" placeholder="Промокод (если есть)">
     <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="rep-deadline" placeholder="Дедлайн"><p class="error-msg" id="rep-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
-    <button class="btn-primary" id="rep-submit" disabled onclick="if(validateAll(['rep-username','rep-deadline']))goToPayment('reputation',false)">Оформить заказ</button>
+    <button class="btn-primary" id="rep-submit" disabled onclick="if(validateAll(['rep-username','rep-deadline'])){setPayment(parseInt(document.getElementById('rep-total').textContent)||0);goTo('payment');}">Оформить заказ</button>
     <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
 </div>
 
@@ -415,7 +417,7 @@
     <input type="text" id="ab-username" placeholder="TG username"><p class="error-msg" id="ab-username-error">Укажите Telegram username!</p>
     <input type="text" id="ab-promo" placeholder="Промокод (если есть)">
     <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="ab-deadline" placeholder="Дедлайн"><p class="error-msg" id="ab-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
-    <button class="btn-primary" id="ab-submit" disabled onclick="if(validateAll(['ab-username','ab-deadline']))goToPayment('abyss',false)">Оформить заказ</button>
+    <button class="btn-primary" id="ab-submit" disabled onclick="if(validateAll(['ab-username','ab-deadline'])){setPayment(parseInt(document.getElementById('abyss-total').textContent)||0);goTo('payment');}">Оформить заказ</button>
     <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
 </div>
 
@@ -449,7 +451,7 @@
     <input type="text" id="char-username" placeholder="TG username"><p class="error-msg" id="char-username-error">Укажите Telegram username!</p>
     <input type="text" id="char-promo" placeholder="Промокод (если есть)">
     <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="char-deadline" placeholder="Дедлайн"><p class="error-msg" id="char-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
-    <button class="btn-primary" id="char-submit" disabled onclick="if(validateAll(['char-username','char-deadline']))goToPayment('char-up',false)">Оформить заказ</button>
+    <button class="btn-primary" id="char-submit" disabled onclick="if(validateAll(['char-username','char-deadline'])){setPayment(parseInt(document.getElementById('char-total').textContent)||0);goTo('payment');}">Оформить заказ</button>
     <p class="note">По вопросам — <a href="https://t.me/orcxanax">@orcxanax</a></p>
 </div>
 
@@ -466,7 +468,7 @@
     <input type="text" id="care-username" placeholder="TG username"><p class="error-msg" id="care-username-error">Укажите Telegram username!</p>
     <input type="text" id="care-promo" placeholder="Промокод (если есть)">
     <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="care-deadline" placeholder="Дедлайн"><p class="error-msg" id="care-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
-    <button class="btn-primary" id="care-submit" disabled onclick="if(validateAll(['care-username','care-deadline']))goToPayment('care',false)">Оформить заказ</button>
+    <button class="btn-primary" id="care-submit" disabled onclick="if(validateAll(['care-username','care-deadline'])){setPayment(parseInt(document.getElementById('care-total').textContent)||0);goTo('payment');}">Оформить заказ</button>
 </div>
 
 <div id="screen-farm" class="screen hidden">
@@ -483,7 +485,7 @@
     <input type="text" id="farm-username" placeholder="TG username"><p class="error-msg" id="farm-username-error">Укажите Telegram username!</p>
     <input type="text" id="farm-promo" placeholder="Промокод (если есть)">
     <div class="deadline-bar"><div class="dl-title">ДЕДЛАЙН</div><input type="text" id="farm-deadline" placeholder="Дедлайн"><p class="error-msg" id="farm-deadline-error">Укажите дедлайн!</p><div class="dl-hint">Сложные заказы — разумные сроки</div></div>
-    <button class="btn-primary" id="farm-submit" disabled onclick="if(validateAll(['farm-username','farm-deadline']))goToPayment('farm',false)">Оформить заказ</button>
+    <button class="btn-primary" id="farm-submit" disabled onclick="if(validateAll(['farm-username','farm-deadline'])){setPayment(parseInt(document.getElementById('farm-total').textContent)||0);goTo('payment');}">Оформить заказ</button>
 </div>
 
 <div id="screen-payment" class="screen hidden">
@@ -495,12 +497,16 @@
     <div id="payment-full-box" class="hidden">
         <div class="requisites"><div class="title">РЕКВИЗИТЫ ДЛЯ ОПЛАТЫ</div><div class="info">Карта: 2200 7013 9958 3951 (Т-Банк)<br>Получатель: Юлия Р.<br>Сумма: <span id="pay-full-amount">0 руб.</span></div></div>
         <div class="instructions"><div class="title">ЧТО ДЕЛАТЬ ДАЛЬШЕ</div><ol><li>Оплатите полную сумму по реквизитам выше</li><li>Нажмите кнопку ниже</li><li>Приложение закроется — отправьте скриншот в чат с ботом</li></ol></div>
-        <button class="btn-primary" onclick="sendOrderFinal()">Оформить заказ</button>
+        <button class="btn-primary" onclick="finishPayment('full')">
+            Я оплатил(а), отправить заказ
+        </button>
     </div>
     <div id="payment-half-box" class="hidden">
         <div class="requisites"><div class="title">РЕКВИЗИТЫ ДЛЯ ПРЕДОПЛАТЫ 50%</div><div class="info">Карта: 2200 7013 9958 3951 (Т-Банк)<br>Получатель: Юлия Р.<br>Сумма к оплате сейчас: <span id="pay-half-amount">0 руб.</span><br><span style="font-size:12px;color:var(--hint);">Оставшиеся 50% оплачиваются напрямую качеру после выполнения половины заказа</span></div></div>
         <div class="instructions"><div class="title">ЧТО ДЕЛАТЬ ДАЛЬШЕ</div><ol><li>Оплатите 50% по реквизитам выше</li><li>Нажмите кнопку ниже</li><li>Приложение закроется — отправьте скриншот в чат с ботом</li><li>Оставшиеся 50% оплатите напрямую качеру после выполнения половины заказа</li></ol></div>
-        <button class="btn-primary" onclick="sendOrderFinal()">Оформить заказ</button>
+        <button class="btn-primary" onclick="finishPayment('half')">
+            Я оплатил(а) 50%, отправить заказ
+        </button>
     </div>
 </div>
 
@@ -512,9 +518,30 @@
 </div>
 
 <div id="screen-profile" class="screen hidden">
-    <div class="back-row"><button class="back-btn" onclick="goTo('main')">← Назад</button><span class="screen-title">Профиль</span></div>
-    <div class="profile-info"><p>Нажмите для загрузки профиля Telegram</p><p style="font-size:11px;opacity:0.7;">(без авторизации, Telegram передаст данные автоматически)</p></div>
-    <button class="btn-full" onclick="loadProfile()">Загрузить профиль</button>
+    <div class="back-row">
+        <button class="back-btn" onclick="goTo('main')">
+            ← Назад
+        </button>
+        <span class="screen-title">Профиль</span>
+    </div>
+    <div class="profile-info">
+        <h2 id="profile-name">...</h2>
+        <p id="profile-username"></p>
+        <p><b>Telegram ID:</b>
+        <span id="profile-id"></span></p>
+    </div>
+    <div class="card">
+        <h3>Последние заказы</h3>
+        <div id="last-orders">
+            Пока нет заказов
+        </div>
+    </div>
+    <div class="card">
+        <h3>Активные промокоды</h3>
+        <div id="promo-list">
+            Нет активных промокодов
+        </div>
+    </div>
 </div>
 
 <div id="screen-success" class="screen hidden">
@@ -522,9 +549,32 @@
     <div class="success-title">Заказ оформлен!</div>
     <div class="success-order">Закройте приложение и отправьте скриншот оплаты в чат с ботом.</div>
     <p class="thanks">Спасибо что выбрали нас!</p>
+    <button class="btn-primary" onclick="goTo('main')">На главную</button>
 </div>
 
 <script>
+    const tg = window.Telegram.WebApp;
+    const user = tg.initDataUnsafe.user || {};
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const name = document.getElementById("profile-name");
+        const username = document.getElementById("profile-username");
+        const id = document.getElementById("profile-id");
+        
+        if(name)
+            name.textContent =
+                (user.first_name || "") +
+                (user.last_name ? " " + user.last_name : "");
+        
+        if(username)
+            username.textContent =
+                user.username ? "@" + user.username : "Без username";
+        
+        if(id)
+            id.textContent =
+                user.id || "-";
+    });
+
     const REGIONS = [
         {name:"Мондштадт (без хребта)",price:1100},{name:"Хребет",price:818},
         {name:"Ли Юэ",price:1400},{name:"Инадзума",price:1800},
@@ -567,53 +617,43 @@
         abThSelected:new Set(),abAbSelected:new Set(),abEchoCount:0,abEchoPrice:0,
         careSelected:null,carePrice:0,farmD:0,farmR:0,farmPrice:0,
         talentPrice:0,charLvlPrice:0,charCount:1,wpnLvlPrice:0,wpnCount:1,
-        paymentTotal:0,lastScreen:null
+        paymentTotal:0,lastScreen:null,payNow:0,paymentMethod:"100%"
     };
 
-    function goToPayment(type, urgent) {
+    function sendOrderFinal() {
         const tg = window.Telegram.WebApp;
-        let order = {service:'', details:'', price:0, username:'', deadline:'', category:type, restrictions:'', promo_code:''};
-        let prefix = '';
-        
-        if(type==='pulls'){
-            order.service = urgent ? '⚡ Заказ круток (СРОЧНО)' : 'Заказ круток';
-            order.price = urgent ? state.urgentPrice : state.price;
-            order.username = document.getElementById((urgent?'up':'p')+'-username')?.value || '';
-            order.deadline = document.getElementById((urgent?'up':'p')+'-deadline')?.value || '';
-            order.promo_code = document.getElementById((urgent?'up':'p')+'-promo')?.value || '';
-            order.restrictions = document.getElementById((urgent?'up':'p')+'-restrictions')?.value || '';
-            order.details = 'Ранг: '+(urgent?(state.urgentRank==='low'?'1-25':state.urgentRank==='2'?'26-44':state.urgentRank==='3'?'45-54':'55-60'):(state.rank==='low'?'1-25':state.rank==='2'?'26-44':state.rank==='3'?'45-54':'55-60'))+'\nКруток: '+(urgent?state.urgentQty:state.qty);
-        } else if(type==='map'){
-            let set = urgent ? state.urgentMapSelected : state.mapSelected;
-            order.service = urgent ? '⚡ Зачистка карты (СРОЧНО)' : 'Зачистка карты';
-            order.price = parseInt(document.getElementById(urgent?'umap-total':'map-total')?.textContent) || 0;
-            order.username = document.getElementById((urgent?'um':'m')+'-username')?.value || '';
-            order.deadline = document.getElementById((urgent?'um':'m')+'-deadline')?.value || '';
-            order.promo_code = document.getElementById((urgent?'um':'m')+'-promo')?.value || '';
-            order.restrictions = document.getElementById((urgent?'um':'m')+'-restrictions')?.value || '';
-            let regions = []; set.forEach(i => regions.push(REGIONS[i].name)); order.details = regions.join(', ');
-        } else if(type==='story'){
-            order.service = urgent ? '⚡ Прохождение квестов (СРОЧНО)' : 'Прохождение квестов';
-            order.price = parseInt(document.getElementById(urgent?'ustory-total':'story-total')?.textContent) || 0;
-            order.username = document.getElementById((urgent?'us':'s')+'-username')?.value || '';
-            order.deadline = document.getElementById((urgent?'us':'s')+'-deadline')?.value || '';
-            order.promo_code = document.getElementById((urgent?'us':'s')+'-promo')?.value || '';
-            order.restrictions = document.getElementById((urgent?'us':'s')+'-restrictions')?.value || '';
-            let sel = []; state.storySelected.forEach(i => sel.push(STORY[i].name)); order.details = sel.join(', ');
-        } else {
-            let idMap = {oculus:'oc',reputation:'rep',abyss:'ab','char-up':'char',care:'care',farm:'farm',payment:'m'};
-            let p = idMap[type] || 'm';
-            order.service = document.querySelector('#screen-'+type+' .screen-title')?.textContent || 'Заказ';
-            order.price = parseInt(document.getElementById((type==='payment'?'pay':p)+'-total')?.textContent) || state.paymentTotal || 0;
-            order.username = document.getElementById(p+'-username')?.value || '';
-            order.deadline = document.getElementById(p+'-deadline')?.value || '';
-            order.promo_code = document.getElementById(p+'-promo')?.value || '';
-            order.restrictions = document.getElementById(p+'-restrictions')?.value || '';
-            order.details = 'Детали заказа';
-        }
-
-        tg.sendData(JSON.stringify({action:'new_order', order:order}));
+        const user = tg.initDataUnsafe.user || {};
+        let order = {
+            service: state.selectedService || state.service || "",
+            category: state.selectedCategory || "",
+            telegram_id: user.id || "",
+            username: user.username || "",
+            first_name: user.first_name || "",
+            last_name: user.last_name || "",
+            uid: state.uid || "",
+            server: state.server || "",
+            quantity: state.quantity || 0,
+            deadline: state.deadline || "",
+            payment_type: state.paymentMethod || "100%",
+            promo: state.promoCode || "",
+            restrictions: state.restrictions || "",
+            comment: state.comment || "",
+            price: state.payNow || state.paymentTotal || 0
+        };
+        tg.sendData(JSON.stringify({
+            action: "new_order",
+            order: order
+        }));
         tg.close();
+    }
+
+    function finishPayment(type){
+        if(type==="full"){
+            state.paymentMethod="100%";
+        }else{
+            state.paymentMethod="50%";
+        }
+        sendOrderFinal();
     }
 
     function createPetals(){
@@ -653,17 +693,33 @@
 
     function toggleTheme(){document.body.classList.toggle('dark');document.body.classList.toggle('light');updateDecor();}
     function openTG(u){window.open(u,'_blank');}
-    function setPayment(total){state.paymentTotal=total;}
+    function setPayment(total){
+        state.paymentTotal = total;
+        state.payNow = state.paymentTotal;
+    }
     function selectPayment(type){
         document.getElementById('payment-full-box').classList.add('hidden');
         document.getElementById('payment-half-box').classList.add('hidden');
-        document.getElementById('pay-total').textContent=state.paymentTotal+' руб.';
-        if(type==='full'){
+        
+        document.getElementById('pay-total').textContent =
+            (state.payNow || state.paymentTotal) + ' руб.';
+        
+        if(type === 'full'){
+            state.paymentMethod = "100%";
+            state.payNow = state.paymentTotal;
+            
             document.getElementById('payment-full-box').classList.remove('hidden');
-            document.getElementById('pay-full-amount').textContent=state.paymentTotal+' руб.';
-        } else {
+            
+            document.getElementById('pay-full-amount').textContent =
+                state.paymentTotal + ' руб.';
+        }else{
+            state.paymentMethod = "50%";
+            state.payNow = Math.floor(state.paymentTotal / 2);
+            
             document.getElementById('payment-half-box').classList.remove('hidden');
-            document.getElementById('pay-half-amount').textContent=Math.floor(state.paymentTotal/2)+' руб.';
+            
+            document.getElementById('pay-half-amount').textContent =
+                state.payNow + ' руб.';
         }
     }
     function goBackFromPayment(){goTo('main');}
@@ -677,21 +733,46 @@
         state.abThSelected=new Set();state.abAbSelected=new Set();state.abEchoCount=0;state.abEchoPrice=0;
         state.careSelected=null;state.carePrice=0;state.farmD=0;state.farmR=0;state.farmPrice=0;
         state.talentPrice=0;state.charLvlPrice=0;state.charCount=1;state.wpnLvlPrice=0;state.wpnCount=1;
-        state.paymentTotal=0;state.lastScreen=null;
+        state.paymentTotal=0;state.lastScreen=null;state.payNow=0;state.paymentMethod="100%";
         document.getElementById('promo-input').value='';document.getElementById('promo-result').textContent='';
     }
     function resetAndGo(s){resetAll();goTo(s);}
     function goTo(s){
-        document.querySelectorAll('.screen').forEach(e=>e.classList.add('hidden'));
-        let el=document.getElementById('screen-'+s);if(el)el.classList.remove('hidden');
-        if(s==='map')buildRegions(false);if(s==='urgent-map')buildRegions(true);
-        if(s==='story')buildStory(false);if(s==='urgent-story')buildStory(true);
-        if(s==='oculus')buildOculus(false);if(s==='urgent-oculus')buildOculus(true);
-        if(s==='reputation')buildReputation();
+        document.querySelectorAll('.screen').forEach(e=>{
+            e.classList.add('hidden');
+        });
+        
+        let el = document.getElementById('screen-'+s);
+        if(el) el.classList.remove('hidden');
+        
+        if(s==='map') buildRegions(false);
+        if(s==='urgent-map') buildRegions(true);
+        if(s==='story') buildStory(false);
+        if(s==='urgent-story') buildStory(true);
+        if(s==='oculus') buildOculus(false);
+        if(s==='urgent-oculus') buildOculus(true);
+        if(s==='reputation') buildReputation();
+        
         if(s==='payment'){
-            document.getElementById('pay-total').textContent=state.paymentTotal+' руб.';
+            document.getElementById('pay-total').textContent =
+                (state.payNow || state.paymentTotal) + ' руб.';
             document.getElementById('payment-full-box').classList.add('hidden');
             document.getElementById('payment-half-box').classList.add('hidden');
+        }
+        
+        if(s==='profile'){
+            const tg = window.Telegram.WebApp;
+            const user = tg.initDataUnsafe.user || {};
+            
+            document.getElementById("profile-name").textContent =
+                (user.first_name || "") +
+                (user.last_name ? " " + user.last_name : "");
+            
+            document.getElementById("profile-username").textContent =
+                user.username ? "@" + user.username : "Без username";
+            
+            document.getElementById("profile-id").textContent =
+                user.id || "-";
         }
     }
 
@@ -814,31 +895,14 @@
     function updateStoryTotal(){let t=0;state.storySelected.forEach(i=>t+=STORY[i].price);document.getElementById('story-total').textContent=t+' руб.';document.getElementById('story-form').classList.toggle('hidden',state.storySelected.size===0);}
     function updateUrgentStoryTotal(){let t=0;state.urgentStorySelected.forEach(i=>t+=STORY[i].price+100);document.getElementById('ustory-total').textContent=t+' руб.';document.getElementById('urgent-story-form').classList.toggle('hidden',state.urgentStorySelected.size===0);}
 
-    function loadProfile(){const tg=window.Telegram.WebApp;tg.sendData(JSON.stringify({action:'get_profile'}));}
-    function sendOrderFinal() {
-    const tg = window.Telegram.WebApp;
-    let order = {
-        service: 'Заказ',
-        details: 'Детали заказа',
-        price: state.paymentTotal || 0,
-        username: '',
-        deadline: '',
-        category: 'all',
-        restrictions: '',
-        promo_code: ''
-    };
-    
-    // Ищем username на предыдущем экране
-    let uname = document.querySelector('input[placeholder="TG username"]');
-    if (uname) order.username = uname.value;
-    
-    // Ищем дедлайн
-    let dl = document.querySelector('input[placeholder="Дедлайн"]');
-    if (dl) order.deadline = dl.value;
-    
-    tg.sendData(JSON.stringify({action:'new_order', order:order}));
-    tg.close();
-}
+    function loadProfile(){
+        const tg = window.Telegram.WebApp;
+        tg.sendData(JSON.stringify({
+            action:"get_profile",
+            telegram_id: tg.initDataUnsafe.user.id
+        }));
+    }
+
     function activatePromo(){document.getElementById('promo-result').textContent='Промокод отправлен!';}
 </script>
 </body>
