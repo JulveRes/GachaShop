@@ -495,12 +495,12 @@
     <div id="payment-full-box" class="hidden">
         <div class="requisites"><div class="title">РЕКВИЗИТЫ ДЛЯ ОПЛАТЫ</div><div class="info">Карта: 2200 7013 9958 3951 (Т-Банк)<br>Получатель: Юлия Р.<br>Сумма: <span id="pay-full-amount">0 руб.</span></div></div>
         <div class="instructions"><div class="title">ЧТО ДЕЛАТЬ ДАЛЬШЕ</div><ol><li>Оплатите полную сумму по реквизитам выше</li><li>Нажмите кнопку ниже</li><li>Приложение закроется — отправьте скриншот в чат с ботом</li></ol></div>
-        <button class="btn-primary" onclick="sendOrder('payment',false)">Оформить заказ</button>
+        <button class="btn-primary" onclick="sendOrderFinal()">Оформить заказ</button>
     </div>
     <div id="payment-half-box" class="hidden">
         <div class="requisites"><div class="title">РЕКВИЗИТЫ ДЛЯ ПРЕДОПЛАТЫ 50%</div><div class="info">Карта: 2200 7013 9958 3951 (Т-Банк)<br>Получатель: Юлия Р.<br>Сумма к оплате сейчас: <span id="pay-half-amount">0 руб.</span><br><span style="font-size:12px;color:var(--hint);">Оставшиеся 50% оплачиваются напрямую качеру после выполнения половины заказа</span></div></div>
         <div class="instructions"><div class="title">ЧТО ДЕЛАТЬ ДАЛЬШЕ</div><ol><li>Оплатите 50% по реквизитам выше</li><li>Нажмите кнопку ниже</li><li>Приложение закроется — отправьте скриншот в чат с ботом</li><li>Оставшиеся 50% оплатите напрямую качеру после выполнения половины заказа</li></ol></div>
-        <button class="btn-primary" onclick="sendOrder('payment',false)">Оформить заказ</button>
+        <button class="btn-primary" onclick="sendOrderFinal()">Оформить заказ</button>
     </div>
 </div>
 
@@ -815,6 +815,30 @@
     function updateUrgentStoryTotal(){let t=0;state.urgentStorySelected.forEach(i=>t+=STORY[i].price+100);document.getElementById('ustory-total').textContent=t+' руб.';document.getElementById('urgent-story-form').classList.toggle('hidden',state.urgentStorySelected.size===0);}
 
     function loadProfile(){const tg=window.Telegram.WebApp;tg.sendData(JSON.stringify({action:'get_profile'}));}
+    function sendOrderFinal() {
+    const tg = window.Telegram.WebApp;
+    let order = {
+        service: 'Заказ',
+        details: 'Детали заказа',
+        price: state.paymentTotal || 0,
+        username: '',
+        deadline: '',
+        category: 'all',
+        restrictions: '',
+        promo_code: ''
+    };
+    
+    // Ищем username на предыдущем экране
+    let uname = document.querySelector('input[placeholder="TG username"]');
+    if (uname) order.username = uname.value;
+    
+    // Ищем дедлайн
+    let dl = document.querySelector('input[placeholder="Дедлайн"]');
+    if (dl) order.deadline = dl.value;
+    
+    tg.sendData(JSON.stringify({action:'new_order', order:order}));
+    tg.close();
+}
     function activatePromo(){document.getElementById('promo-result').textContent='Промокод отправлен!';}
 </script>
 </body>
